@@ -19,11 +19,17 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     if (!isAuthenticated) { router.replace('/'); return; }
     loadData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, hydrated]);
 
   async function loadData() {
     try {
@@ -47,6 +53,7 @@ export default function DashboardPage() {
     totalProjects: projects.length,
   };
 
+  if (!hydrated) return <div className="min-h-screen bg-dark-900 flex items-center justify-center"><div className="w-8 h-8 border-2 border-brand-blue border-t-transparent rounded-full animate-spin" /></div>;
   if (!isAuthenticated) return null;
 
   return (
