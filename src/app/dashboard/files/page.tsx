@@ -32,7 +32,7 @@ export default function FilesPage() {
     setUploading(true);
     try {
       const fd = new FormData(); fd.append('file', file);
-      await apiClient.post('/upload', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await apiClient.post('/upload/single', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       load();
     } catch {} finally { setUploading(false); }
   }

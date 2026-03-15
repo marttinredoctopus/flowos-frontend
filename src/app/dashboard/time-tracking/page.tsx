@@ -35,7 +35,12 @@ export default function TimeTrackingPage() {
     setRunning(false);
     if (startTime) {
       try {
-        await apiClient.post('/time-entries', { description: desc, duration: elapsed, startedAt: startTime.toISOString() });
+        await apiClient.post('/time-entries', {
+          description: desc,
+          durationSeconds: elapsed,
+          startedAt: startTime.toISOString(),
+          endedAt: new Date().toISOString(),
+        });
         const r = await apiClient.get('/time-entries');
         setEntries(r.data || []);
       } catch {}
@@ -45,7 +50,7 @@ export default function TimeTrackingPage() {
     setStartTime(null);
   }
 
-  const totalToday = entries.filter(e => new Date(e.created_at).toDateString() === new Date().toDateString()).reduce((a, e) => a + (e.duration || 0), 0);
+  const totalToday = entries.filter(e => new Date(e.created_at).toDateString() === new Date().toDateString()).reduce((a, e) => a + (e.duration_seconds || 0), 0);
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -73,7 +78,7 @@ export default function TimeTrackingPage() {
         : entries.slice(0,20).map((e: any, i) => (
           <div key={e.id} className={`flex items-center gap-4 px-5 py-3.5 hover:bg-white/5 transition ${i ? 'border-t border-white/5' : ''}`}>
             <div className="flex-1 min-w-0"><p className="text-sm text-white truncate">{e.description || 'No description'}</p><p className="text-xs text-slate-500">{new Date(e.created_at).toLocaleDateString()}</p></div>
-            <span className="font-mono text-sm text-brand-blue font-semibold">{formatTime(e.duration || 0)}</span>
+            <span className="font-mono text-sm text-brand-blue font-semibold">{formatTime(e.duration_seconds || 0)}</span>
           </div>
         ))}
       </div>
