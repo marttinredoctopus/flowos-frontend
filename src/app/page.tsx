@@ -231,7 +231,7 @@ export default function LandingPage() {
   function openLogin() { setShowLogin(true); setMobileMenuOpen(false); }
 
   return (
-    <div style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100vh', fontFamily: 'Inter, sans-serif', overflowX: 'hidden' }}>
 
       {/* ── NAVBAR ─────────────────────────────────────────────────────────── */}
       <nav style={{
@@ -329,7 +329,7 @@ export default function LandingPage() {
             fontWeight: 800,
             fontSize: 'clamp(48px, 8vw, 88px)',
             lineHeight: 1.0,
-            letterSpacing: '-3px',
+            letterSpacing: 'clamp(-1px, -0.03em, -3px)',
             marginBottom: '24px',
             color: 'var(--text)',
           }}>
@@ -427,7 +427,7 @@ export default function LandingPage() {
 
       {/* ── PROBLEM → SOLUTION ─────────────────────────────────────────────── */}
       <section style={{ padding: '100px 24px', maxWidth: '1100px', margin: '0 auto' }}>
-        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }} id="features">
+        <div className="reveal grid grid-cols-1 md:grid-cols-2 gap-8" id="features">
           {/* Problem */}
           <div style={{ background: 'rgba(239,68,68,0.04)', border: '1px solid rgba(239,68,68,0.1)', borderRadius: '20px', padding: '36px' }}>
             <h3 style={{ fontFamily: 'Syne, sans-serif', fontSize: '22px', fontWeight: 700, marginBottom: '8px', color: 'var(--text)' }}>

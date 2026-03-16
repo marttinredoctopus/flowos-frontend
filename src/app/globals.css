@@ -388,3 +388,20 @@
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Landing page mobile fixes ───────────────────────────────── */
+@media (max-width: 640px) {
+  /* Hero mockup shrink */
+  .hero-orb-1 { width: 300px; height: 300px; }
+  .hero-orb-2 { width: 200px; height: 200px; right: -60px; }
+  .hero-orb-3 { display: none; }
+
+  /* Section padding mobile */
+  section { padding-left: 16px !important; padding-right: 16px !important; }
+
+  /* Pricing cards single column */
+  .pricing-grid { grid-template-columns: 1fr !important; }
+
+  /* Footer single column */
+  .footer-grid { grid-template-columns: 1fr 1fr !important; }
+}
