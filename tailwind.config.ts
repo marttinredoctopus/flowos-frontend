@@ -5,14 +5,16 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['DM Sans', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
         display: ['Syne', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
         brand: {
-          blue: '#4f8cff',
-          purple: '#7c3aed',
-          pink: '#f472b6',
+          blue: '#3b82f6',
+          purple: '#8b5cf6',
+          pink: '#ec4899',
+          green: '#10b981',
         },
         dark: {
           900: '#06080f',

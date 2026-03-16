@@ -241,7 +241,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!isAuthenticated) return null;
 
   const Sidebar = () => (
-    <aside className="w-64 flex-shrink-0 flex flex-col h-full bg-[#0f1117] border-r border-white/5">
+    <aside className="w-64 flex-shrink-0 flex flex-col h-full" style={{ background: 'var(--surface)', borderRight: '1px solid var(--border)' }}>
       <div className="p-5 border-b border-white/5">
         <div className="font-display font-bold text-xl gradient-text leading-tight">FlowOS</div>
         <div className="text-[10px] font-semibold tracking-widest text-slate-500 uppercase mt-0.5">Agency Edition</div>
@@ -302,8 +302,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </aside>
   );
 
+  const bottomNavItems = [
+    { icon: '🏠', label: 'Home', href: '/dashboard' },
+    { icon: '✅', label: 'Tasks', href: '/dashboard/tasks' },
+    { icon: '📁', label: 'Projects', href: '/dashboard/projects' },
+    { icon: '💬', label: 'Chat', href: '/dashboard/chat' },
+    { icon: '☰', label: 'More', href: '', action: () => setSidebarOpen(true) },
+  ];
+
   return (
-    <div className="flex h-screen bg-[#070b0f] overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--bg)' }}>
       {searchOpen && <GlobalSearch onClose={() => setSearchOpen(false)} />}
 
       <div className="hidden md:flex md:flex-col md:h-full">
@@ -318,23 +326,42 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-white/5 bg-[#0f1117] flex-shrink-0">
-          <button onClick={() => setSidebarOpen(true)} className="p-2 text-slate-400 hover:text-white transition">
+        <header className="md:hidden flex items-center justify-between px-4 h-14 border-b flex-shrink-0" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+          <button onClick={() => setSidebarOpen(true)} className="p-2 transition" style={{ color: 'var(--text-muted)' }}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
           <span className="font-display font-bold text-lg gradient-text">FlowOS</span>
           <div className="flex items-center gap-2">
-            <button onClick={() => setSearchOpen(true)} className="p-2 text-slate-400 hover:text-white transition">🔍</button>
+            <button onClick={() => setSearchOpen(true)} className="p-2 transition" style={{ color: 'var(--text-muted)' }}>🔍</button>
             <NotificationBell />
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto main-with-bottom-nav">
           {children}
         </main>
       </div>
+
+      {/* Mobile bottom navigation */}
+      <nav className="mobile-bottom-nav">
+        {bottomNavItems.map((item) => (
+          item.action ? (
+            <button key={item.label} onClick={item.action} className={isActive(item.href) ? 'active' : ''}>
+              <span className="nav-icon">{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ) : (
+            <Link key={item.label} href={item.href} legacyBehavior>
+              <button className={isActive(item.href) ? 'active' : ''}>
+                <span className="nav-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            </Link>
+          )
+        ))}
+      </nav>
     </div>
   );
 }
