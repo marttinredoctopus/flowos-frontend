@@ -31,24 +31,24 @@ export default function LandingPage() {
   }, []);
 
   const features = [
-    { icon: '✅', title: 'Task Management', color: '#6366f1', desc: 'Kanban, List, Calendar views. Subtasks, dependencies, priorities.' },
-    { icon: '📅', title: 'Content Calendar', color: '#8b5cf6', desc: 'Plan, schedule, publish across all platforms from one calendar.' },
-    { icon: '📈', title: 'Ad Campaign Tracker', color: '#ec4899', desc: 'Track ROAS, CTR, CPC in real-time. Built for media buyers.' },
-    { icon: '💬', title: 'Team Chat', color: '#06b6d4', desc: 'Real-time messaging with channels, DMs, and file sharing.' },
-    { icon: '⏱️', title: 'Time Tracking', color: '#10b981', desc: 'One-click timers, billable hours, automated invoicing.' },
-    { icon: '✨', title: 'AI Intelligence', color: '#f59e0b', desc: 'Competitor SWOT, ad copy, campaign ideation. Your 24/7 strategist.' },
-    { icon: '🧾', title: 'Invoices & Finance', color: '#6366f1', desc: 'Professional invoices, expense tracking, payment management.' },
-    { icon: '👥', title: 'Client Portal', color: '#8b5cf6', desc: 'Branded portal: progress, approvals, invoices. No internal chaos exposed.' },
-    { icon: '🎨', title: 'Design Hub', color: '#ec4899', desc: 'Upload designs, pixel-precise comments, version history.' },
+    { icon: '/icons/3d/tasks.svg', title: 'Task Management', color: '#6366f1', desc: 'Kanban, List, Calendar views. Subtasks, dependencies, priorities.' },
+    { icon: '/icons/3d/calendar.svg', title: 'Content Calendar', color: '#8b5cf6', desc: 'Plan, schedule, publish across all platforms from one calendar.' },
+    { icon: '/icons/3d/campaigns.svg', title: 'Ad Campaign Tracker', color: '#ec4899', desc: 'Track ROAS, CTR, CPC in real-time. Built for media buyers.' },
+    { icon: '/icons/3d/chat.svg', title: 'Team Chat', color: '#06b6d4', desc: 'Real-time messaging with channels, DMs, and file sharing.' },
+    { icon: '/icons/3d/timer.svg', title: 'Time Tracking', color: '#10b981', desc: 'One-click timers, billable hours, automated invoicing.' },
+    { icon: '/icons/3d/ai.svg', title: 'AI Intelligence', color: '#f59e0b', desc: 'Competitor SWOT, ad copy, campaign ideation. Your 24/7 strategist.' },
+    { icon: '/icons/3d/finance.svg', title: 'Invoices & Finance', color: '#6366f1', desc: 'Professional invoices, expense tracking, payment management.' },
+    { icon: '/icons/3d/clients.svg', title: 'Client Portal', color: '#8b5cf6', desc: 'Branded portal: progress, approvals, invoices. No internal chaos exposed.' },
+    { icon: '/icons/3d/design.svg', title: 'Design Hub', color: '#ec4899', desc: 'Upload designs, pixel-precise comments, version history.' },
   ];
 
   const painPoints = [
-    { icon: '🗂️', title: 'Scattered across 6 apps', desc: 'Trello for tasks, Notion for docs, Slack for chat, Harvest for time, Drive for files...' },
-    { icon: '👁️', title: 'No client visibility', desc: 'Clients emailing for updates. Status calls every week. You\'re the bottleneck.' },
-    { icon: '⏰', title: 'Time tracking is broken', desc: 'Hours slip through the cracks. Invoices are late. Cash flow suffers.' },
-    { icon: '🤖', title: 'AI tools not connected', desc: 'Switching between ChatGPT tabs to write copy that isn\'t connected to your actual work.' },
-    { icon: '📉', title: 'Delivery keeps slipping', desc: 'Without a unified system, projects go over deadline and over budget.' },
-    { icon: '📊', title: 'Reporting is a nightmare', desc: 'Building reports from 4 different exports every month. Manual, slow, error-prone.' },
+    { icon: '/icons/3d/scattered.svg', title: 'Scattered across 6 apps', desc: 'Trello for tasks, Notion for docs, Slack for chat, Harvest for time, Drive for files...' },
+    { icon: '/icons/3d/visibility.svg', title: 'No client visibility', desc: 'Clients emailing for updates. Status calls every week. You\'re the bottleneck.' },
+    { icon: '/icons/3d/clock-broken.svg', title: 'Time tracking is broken', desc: 'Hours slip through the cracks. Invoices are late. Cash flow suffers.' },
+    { icon: '/icons/3d/robot.svg', title: 'AI tools not connected', desc: 'Switching between ChatGPT tabs to write copy that isn\'t connected to your actual work.' },
+    { icon: '/icons/3d/delivery.svg', title: 'Delivery keeps slipping', desc: 'Without a unified system, projects go over deadline and over budget.' },
+    { icon: '/icons/3d/reports.svg', title: 'Reporting is a nightmare', desc: 'Building reports from 4 different exports every month. Manual, slow, error-prone.' },
   ];
 
   const testimonials = [
@@ -326,7 +326,10 @@ export default function LandingPage() {
               }}
                 onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}>
-                <div style={{ fontSize: 26, marginBottom: 10 }}>{p.icon}</div>
+                <img src={p.icon} alt="" width={48} height={48} loading="lazy" style={{ marginBottom: 10, transition: 'transform 0.25s ease', display: 'block' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.08) rotate(-4deg)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1) rotate(0deg)'; }}
+                />
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#f87171', marginBottom: 6 }}>{p.title}</div>
                 <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>{p.desc}</div>
               </div>
@@ -351,17 +354,17 @@ export default function LandingPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
             {[
               {
-                icon: '🏗️', title: 'Unified Workspace', accent: '#6366f1',
+                icon: '/icons/3d/projects.svg', title: 'Unified Workspace', accent: '#6366f1',
                 items: ['Task & project management', 'Team chat & collaboration', 'Time tracking', 'All in one place'],
                 bg: 'rgba(99,102,241,0.06)', border: 'rgba(99,102,241,0.25)',
               },
               {
-                icon: '🤝', title: 'Client Intelligence', accent: '#8b5cf6',
+                icon: '/icons/3d/clients.svg', title: 'Client Intelligence', accent: '#8b5cf6',
                 items: ['Branded client portal', 'Invoicing & payments', 'Approval workflows', 'Real-time reporting'],
                 bg: 'rgba(139,92,246,0.06)', border: 'rgba(139,92,246,0.25)',
               },
               {
-                icon: '🧠', title: 'AI-Powered', accent: '#06b6d4',
+                icon: '/icons/3d/ai.svg', title: 'AI-Powered', accent: '#06b6d4',
                 items: ['Content generation', 'Competitor analysis', 'Campaign builder', 'Strategy automation'],
                 bg: 'rgba(6,182,212,0.06)', border: 'rgba(6,182,212,0.25)',
               },
@@ -373,7 +376,10 @@ export default function LandingPage() {
               }}
                 onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 16px 40px ${s.accent}22`; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'; }}>
-                <div style={{ fontSize: 36, marginBottom: 16 }}>{s.icon}</div>
+                <img src={s.icon} alt="" width={64} height={64} loading="lazy" style={{ marginBottom: 16, transition: 'transform 0.3s ease', display: 'block' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.1) rotate(-3deg)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1) rotate(0deg)'; }}
+                />
                 <h3 style={{ fontSize: 22, fontWeight: 700, color: s.accent, marginBottom: 16 }}>{s.title}</h3>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                   {s.items.map((item, j) => (
@@ -424,7 +430,10 @@ export default function LandingPage() {
                   el.style.background = 'rgba(255,255,255,0.03)';
                   el.style.boxShadow = 'none';
                 }}>
-                <div style={{ fontSize: 32, marginBottom: 14 }}>{f.icon}</div>
+                <img src={f.icon} alt="" width={56} height={56} loading="lazy" style={{ marginBottom: 14, transition: 'transform 0.25s ease', display: 'block' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.1) rotate(4deg)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1) rotate(0deg)'; }}
+                />
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: f.color, marginBottom: 8 }}>{f.title}</h3>
                 <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.65, margin: 0 }}>{f.desc}</p>
               </div>

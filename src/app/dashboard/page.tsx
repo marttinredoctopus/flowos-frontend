@@ -85,11 +85,11 @@ function StatCards({ stats }: { stats: { icon: string; label: string; value: str
             (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
           }}
         >
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 text-lg"
-            style={{ background: s.color + '18' }}
+          <div className="mb-3" style={{ transition: 'transform 0.25s ease', display: 'inline-block' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.1) rotate(4deg)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1) rotate(0deg)'; }}
           >
-            {s.icon}
+            <img src={s.icon} alt="" width={40} height={40} loading="lazy" style={{ display: 'block' }} />
           </div>
           <div
             className="text-3xl font-bold mb-1"
@@ -116,7 +116,7 @@ function ProjectsWidget({ projects, title = 'Recent Projects' }: { projects: any
       </div>
       {projects.length === 0 ? (
         <div className="text-center py-8">
-          <div className="text-3xl mb-2">📁</div>
+          <img src="/icons/3d/projects.svg" alt="" width={48} height={48} className="mx-auto mb-2" />
           <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>No projects yet</p>
           <Link href="/dashboard/projects" className="px-4 py-2 gradient-bg rounded-lg text-sm font-semibold text-white hover:opacity-90 transition inline-block">Create project</Link>
         </div>
@@ -294,10 +294,10 @@ function AdminDashboard() {
         </div>
       ) : (
         <StatCards stats={[
-          { icon: '📁', label: 'Active Projects',   value: stats?.activeProjects ?? projects.filter(p => p.status !== 'completed').length, color: 'var(--blue)' },
-          { icon: '✅', label: 'Open Tasks',         value: stats?.openTasks ?? tasks.filter(t => t.status !== 'done').length,               color: 'var(--purple)' },
-          { icon: '⏰', label: 'Overdue',            value: stats?.overdueCount ?? overdue,                                                   color: 'var(--red)',    isWarning: true },
-          { icon: '👥', label: 'Team Members',       value: stats?.teamCount ?? team.length,                                                  color: 'var(--teal)' },
+          { icon: '/icons/3d/projects.svg',     label: 'Active Projects',   value: stats?.activeProjects ?? projects.filter(p => p.status !== 'completed').length, color: 'var(--blue)' },
+          { icon: '/icons/3d/tasks.svg',         label: 'Open Tasks',         value: stats?.openTasks ?? tasks.filter(t => t.status !== 'done').length,               color: 'var(--purple)' },
+          { icon: '/icons/3d/clock-broken.svg',  label: 'Overdue',            value: stats?.overdueCount ?? overdue,                                                   color: 'var(--red)',    isWarning: true },
+          { icon: '/icons/3d/clients.svg',       label: 'Team Members',       value: stats?.teamCount ?? team.length,                                                  color: 'var(--teal)' },
         ]} />
       )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -345,10 +345,10 @@ function ManagerDashboard() {
         </div>
       ) : (
         <StatCards stats={[
-          { icon: '📁', label: 'My Projects',     value: myProjects.length,          color: 'var(--blue)' },
-          { icon: '👀', label: 'Needs Review',    value: pendingReviews.length,       color: 'var(--yellow)', isWarning: pendingReviews.length > 0 },
-          { icon: '✅', label: 'Team Open Tasks', value: teamTasks.filter(t => t.status !== 'done').length, color: 'var(--purple)' },
-          { icon: '⏰', label: 'Overdue Tasks',   value: overdue,                     color: 'var(--red)', isWarning: overdue > 0 },
+          { icon: '/icons/3d/projects.svg',    label: 'My Projects',     value: myProjects.length,          color: 'var(--blue)' },
+          { icon: '/icons/3d/review.svg',      label: 'Needs Review',    value: pendingReviews.length,       color: 'var(--yellow)', isWarning: pendingReviews.length > 0 },
+          { icon: '/icons/3d/tasks.svg',       label: 'Team Open Tasks', value: teamTasks.filter(t => t.status !== 'done').length, color: 'var(--purple)' },
+          { icon: '/icons/3d/clock-broken.svg',label: 'Overdue Tasks',   value: overdue,                     color: 'var(--red)', isWarning: overdue > 0 },
         ]} />
       )}
 
@@ -414,10 +414,10 @@ function MemberDashboard() {
         </div>
       ) : (
         <StatCards stats={[
-          { icon: '✅', label: 'My Open Tasks',  value: openTasks.length, color: 'var(--blue)' },
-          { icon: '⏰', label: 'Due Today',       value: dueToday.length,  color: 'var(--yellow)', isWarning: dueToday.length > 0 },
-          { icon: '🎯', label: 'Completed',       value: doneTasks.length, color: 'var(--green)' },
-          { icon: '📁', label: 'My Projects',     value: projects.length,  color: 'var(--purple)' },
+          { icon: '/icons/3d/tasks.svg',        label: 'My Open Tasks',  value: openTasks.length, color: 'var(--blue)' },
+          { icon: '/icons/3d/clock-broken.svg', label: 'Due Today',       value: dueToday.length,  color: 'var(--yellow)', isWarning: dueToday.length > 0 },
+          { icon: '/icons/3d/target.svg',       label: 'Completed',       value: doneTasks.length, color: 'var(--green)' },
+          { icon: '/icons/3d/projects.svg',     label: 'My Projects',     value: projects.length,  color: 'var(--purple)' },
         ]} />
       )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
