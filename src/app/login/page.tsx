@@ -24,16 +24,17 @@ function EyeIcon({ open }: { open: boolean }) {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setAuth, isAuthenticated } = useAuthStore();
+  const { setAuth, isAuthenticated, accessToken } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Only redirect if we have a live in-memory token (not just a stale persisted flag)
   useEffect(() => {
-    if (isAuthenticated) router.push('/dashboard');
-  }, [isAuthenticated, router]);
+    if (isAuthenticated && accessToken) router.push('/dashboard');
+  }, [isAuthenticated, accessToken, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
