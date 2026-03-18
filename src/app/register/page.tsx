@@ -26,6 +26,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { setAuth, isAuthenticated } = useAuthStore();
   const [name, setName] = useState('');
+  const [orgName, setOrgName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
@@ -41,7 +42,7 @@ export default function RegisterPage() {
     setError('');
     setLoading(true);
     try {
-      await api.post('/auth/register', { name, email, password });
+      await api.post('/auth/register', { name, email, password, orgName });
       const { data } = await api.post('/auth/login', { email, password });
       setAuth(data.user, data.accessToken);
       (window as any).__TASKSDONE_AUTH_TOKEN__ = data.accessToken;
@@ -105,6 +106,22 @@ export default function RegisterPage() {
               <input
                 type="text" required placeholder="Alex Johnson"
                 value={name} onChange={e => setName(e.target.value)}
+                style={{
+                  width: '100%', padding: '0.75rem 1rem', boxSizing: 'border-box',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 10, color: '#fff', fontSize: '0.95rem', outline: 'none',
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: 6, fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
+                Agency / Company Name
+              </label>
+              <input
+                type="text" required placeholder="Acme Marketing Agency"
+                value={orgName} onChange={e => setOrgName(e.target.value)}
                 style={{
                   width: '100%', padding: '0.75rem 1rem', boxSizing: 'border-box',
                   background: 'rgba(255,255,255,0.05)',
