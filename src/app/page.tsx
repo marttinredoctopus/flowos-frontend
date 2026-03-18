@@ -8,7 +8,6 @@ export default function LandingPage() {
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
   const [cycle, setCycle] = useState<'monthly' | 'annual'>('monthly');
   const [mouse, setMouse] = useState({ x: -999, y: -999 });
-  const [activeFeature, setActiveFeature] = useState(0);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 20);
@@ -25,690 +24,802 @@ export default function LandingPage() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-      { threshold: 0.12 }
+      { threshold: 0.1 }
     );
     document.querySelectorAll('.anim').forEach(el => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const id = setInterval(() => setActiveFeature(f => (f + 1) % 9), 2800);
-    return () => clearInterval(id);
-  }, []);
-
   const features = [
-    { icon: '✅', title: 'Task Management', color: '#6366f1', desc: 'Kanban, List, Calendar, and Timeline views. Subtasks, dependencies, priorities — everything your team needs to stay aligned.' },
-    { icon: '📅', title: 'Content Calendar', color: '#8b5cf6', desc: 'Plan, schedule, and publish content across all platforms. Instagram, LinkedIn, TikTok — one unified calendar.' },
-    { icon: '📈', title: 'Ad Campaign Tracker', color: '#ec4899', desc: 'Track ROAS, CTR, CPC, and conversions across all ad platforms. Real-time dashboards built for media buyers.' },
-    { icon: '💬', title: 'Team Chat', color: '#06b6d4', desc: 'Real-time messaging with channels, DMs, and file sharing. No more switching to Slack mid-workflow.' },
-    { icon: '⏱️', title: 'Time Tracking', color: '#10b981', desc: 'One-click timers, billable hours, and automated timesheets. Invoice clients directly from tracked time.' },
-    { icon: '✨', title: 'AI Intelligence', color: '#f59e0b', desc: 'Competitor SWOT analysis, ad copy generation, campaign ideation. Your always-on creative strategist.' },
-    { icon: '🧾', title: 'Invoices & Finance', color: '#6366f1', desc: 'Create professional invoices, track payments, manage expenses. Get paid faster with Stripe integration.' },
-    { icon: '👥', title: 'Client Portal', color: '#8b5cf6', desc: 'Branded portal where clients track progress, approve deliverables, and view invoices — without seeing internal chatter.' },
-    { icon: '🎨', title: 'Design Hub', color: '#ec4899', desc: 'Upload designs, leave pixel-precise comments, manage version history. Built for creative teams.' },
+    { icon: '✅', title: 'Task Management', color: '#6366f1', desc: 'Kanban, List, Calendar views. Subtasks, dependencies, priorities.' },
+    { icon: '📅', title: 'Content Calendar', color: '#8b5cf6', desc: 'Plan, schedule, publish across all platforms from one calendar.' },
+    { icon: '📈', title: 'Ad Campaign Tracker', color: '#ec4899', desc: 'Track ROAS, CTR, CPC in real-time. Built for media buyers.' },
+    { icon: '💬', title: 'Team Chat', color: '#06b6d4', desc: 'Real-time messaging with channels, DMs, and file sharing.' },
+    { icon: '⏱️', title: 'Time Tracking', color: '#10b981', desc: 'One-click timers, billable hours, automated invoicing.' },
+    { icon: '✨', title: 'AI Intelligence', color: '#f59e0b', desc: 'Competitor SWOT, ad copy, campaign ideation. Your 24/7 strategist.' },
+    { icon: '🧾', title: 'Invoices & Finance', color: '#6366f1', desc: 'Professional invoices, expense tracking, payment management.' },
+    { icon: '👥', title: 'Client Portal', color: '#8b5cf6', desc: 'Branded portal: progress, approvals, invoices. No internal chaos exposed.' },
+    { icon: '🎨', title: 'Design Hub', color: '#ec4899', desc: 'Upload designs, pixel-precise comments, version history.' },
   ];
 
-  const steps = [
-    { num: '01', title: 'Set up your workspace', desc: 'Create your agency account in 60 seconds. Invite your team and add your first client.' },
-    { num: '02', title: 'Import your projects', desc: 'Migrate from Trello, Asana, ClickUp, or start fresh. We handle the heavy lifting.' },
-    { num: '03', title: 'Start shipping', desc: 'Assign tasks, track time, communicate in context, and deliver work your clients will love.' },
+  const painPoints = [
+    { icon: '🗂️', title: 'Scattered across 6 apps', desc: 'Trello for tasks, Notion for docs, Slack for chat, Harvest for time, Drive for files...' },
+    { icon: '👁️', title: 'No client visibility', desc: 'Clients emailing for updates. Status calls every week. You\'re the bottleneck.' },
+    { icon: '⏰', title: 'Time tracking is broken', desc: 'Hours slip through the cracks. Invoices are late. Cash flow suffers.' },
+    { icon: '🤖', title: 'AI tools not connected', desc: 'Switching between ChatGPT tabs to write copy that isn\'t connected to your actual work.' },
+    { icon: '📉', title: 'Delivery keeps slipping', desc: 'Without a unified system, projects go over deadline and over budget.' },
+    { icon: '📊', title: 'Reporting is a nightmare', desc: 'Building reports from 4 different exports every month. Manual, slow, error-prone.' },
   ];
 
   const testimonials = [
-    { name: 'Sofia Martinez', role: 'Founder, Bolt Creative', avatar: 'SM', color: '#6366f1', text: 'We replaced 6 tools with TasksDone. Our team is faster, clients are happier, and we actually know where every project stands at any moment.' },
-    { name: 'James Okafor', role: 'Operations Director, Pulse Media', avatar: 'JO', color: '#8b5cf6', text: 'The Client Portal alone is worth the subscription. No more endless status email threads. Clients log in and see exactly what\'s happening.' },
-    { name: 'Yuki Tanaka', role: 'Head of Growth, Neon Agency', avatar: 'YT', color: '#ec4899', text: 'TasksDone\'s AI intelligence feature generated 3 campaign ideas we actually shipped. It\'s like having a strategist available 24/7.' },
+    { name: 'Sofia Martinez', role: 'Founder', company: 'Bolt Creative', initials: 'SM', color: '#8b5cf6', quote: 'We replaced 6 tools with TasksDone. Our team is faster, clients are happier.' },
+    { name: 'James Okafor', role: 'Operations Director', company: 'Pulse Media', initials: 'JO', color: '#7c3aed', quote: 'The Client Portal alone is worth the subscription. No more status email threads.' },
+    { name: 'Yuki Tanaka', role: 'Head of Growth', company: 'Neon Agency', initials: 'YT', color: '#ec4899', quote: 'TasksDone\'s AI feature generated 3 campaign ideas we actually shipped.' },
   ];
 
-  return (
-    <div style={{ background: '#07080f', color: '#e8eaf0', fontFamily: "'Inter',-apple-system,sans-serif", overflowX: 'hidden', position: 'relative' }}>
+  const faqs = [
+    { q: 'Is it really free to start?', a: 'Yes! The Free plan includes unlimited tasks, 2 active projects, and core features. No credit card required. Upgrade whenever your team is ready.' },
+    { q: 'Can I upgrade or downgrade anytime?', a: 'Absolutely. You can change your plan at any time. Upgrades take effect immediately; downgrades apply at your next billing cycle.' },
+    { q: 'What happens to my files if I downgrade?', a: 'Your files are never deleted. If you exceed the storage limit on a lower plan, files become read-only until you upgrade again.' },
+    { q: 'How does the Client Portal work?', a: 'Each client gets a branded portal where they can view project progress, approve deliverables, and see their invoices — without accessing your internal workspace.' },
+    { q: 'Do you have a mobile app?', a: 'Yes! Native iOS and Android apps are available with full feature parity including time tracking, chat, and task management.' },
+    { q: 'How does AI competitor analysis work?', a: 'Enter a competitor\'s URL or name and our AI generates a full SWOT analysis, positioning recommendations, and content gap opportunities within seconds.' },
+  ];
 
-      {/* CURSOR GLOW */}
+  const proMonthly = 18;
+  const agencyMonthly = 38;
+  const proAnnual = Math.round(proMonthly * 0.83);
+  const agencyAnnual = Math.round(agencyMonthly * 0.83);
+
+  const logos = ['Acme Corp', 'Pixel Studio', 'Nova Labs', 'Drift Media', 'Apex Digital', 'Beam Creative', 'Surge Co', 'Orbit Agency'];
+
+  return (
+    <div style={{ background: '#07080f', color: '#e2e8f0', minHeight: '100vh', fontFamily: "'Inter', -apple-system, sans-serif", overflowX: 'hidden', position: 'relative' }}>
+      {/* Cursor Glow */}
       <div style={{
         position: 'fixed', pointerEvents: 'none', zIndex: 0,
-        width: 600, height: 600, borderRadius: '50%',
-        background: 'radial-gradient(circle,rgba(99,102,241,0.06) 0%,transparent 70%)',
-        transform: `translate(${mouse.x - 300}px,${mouse.y - 300}px)`,
-        transition: 'transform 0.15s ease',
+        width: 600, height: 600,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)',
+        transform: `translate(${mouse.x - 300}px, ${mouse.y - 300}px)`,
+        transition: 'transform 0.1s ease',
       }} />
 
-      {/* NAVBAR */}
+      {/* ── NAVBAR ── */}
       <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
+        padding: '0 24px',
         height: 64,
-        background: scrolled ? 'rgba(7,8,15,0.92)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(24px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : 'none',
-        display: 'flex', alignItems: 'center',
-        padding: '0 5vw', justifyContent: 'space-between',
-        transition: 'all 0.3s',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: scrolled ? 'rgba(7,8,15,0.85)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(99,102,241,0.15)' : '1px solid transparent',
+        transition: 'all 0.3s ease',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => router.push('/')}>
           <div style={{
-            width: 34, height: 34, borderRadius: 9,
-            background: 'linear-gradient(135deg,#6366f1,#a855f7)',
+            width: 34, height: 34, borderRadius: 8,
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '0.95rem', fontWeight: 800, color: '#fff',
+            fontSize: 18, fontWeight: 800, color: '#fff',
           }}>T</div>
           <span style={{
-            fontWeight: 800, fontSize: '1.25rem',
-            background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
+            fontSize: 18, fontWeight: 700,
+            background: 'linear-gradient(90deg, #818cf8, #c084fc)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           }}>TasksDone</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-          {['Features', 'Pricing', 'FAQ'].map(item => (
-            <a key={item} href={`#${item.toLowerCase()}`} style={{
-              color: 'rgba(255,255,255,0.55)', textDecoration: 'none',
-              fontSize: 14, fontWeight: 500, transition: 'color 0.2s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'white')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}>
-              {item}
-            </a>
-          ))}
+        {/* Nav Links */}
+        <div className="nav-links" style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
+          <a href="#features" style={{ color: '#94a3b8', fontSize: 14, textDecoration: 'none', transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#e2e8f0')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#94a3b8')}>Features</a>
+          <a href="#pricing" style={{ color: '#94a3b8', fontSize: 14, textDecoration: 'none', transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#e2e8f0')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#94a3b8')}>Pricing</a>
+          <a href="#faq" style={{ color: '#94a3b8', fontSize: 14, textDecoration: 'none', transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#e2e8f0')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#94a3b8')}>FAQ</a>
         </div>
 
-        <div style={{ display: 'flex', gap: 10 }}>
+        {/* Nav CTAs */}
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <button onClick={() => router.push('/login')} style={{
-            padding: '8px 18px', borderRadius: 8,
-            background: 'transparent',
-            border: '1px solid rgba(255,255,255,0.14)',
-            color: 'rgba(255,255,255,0.75)', fontSize: 14,
-            fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s',
+            background: 'transparent', border: '1px solid rgba(99,102,241,0.4)',
+            color: '#a5b4fc', borderRadius: 8, padding: '8px 16px', fontSize: 14,
+            cursor: 'pointer', transition: 'all 0.2s',
           }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; }}>
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(99,102,241,0.1)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}>
             Sign in
           </button>
           <button onClick={() => router.push('/register')} style={{
-            padding: '8px 20px', borderRadius: 8,
-            background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
-            border: 'none', color: 'white', fontSize: 14,
-            fontWeight: 600, cursor: 'pointer',
-            boxShadow: '0 4px 16px rgba(99,102,241,0.35)',
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            border: 'none', color: '#fff', borderRadius: 8, padding: '8px 18px',
+            fontSize: 14, fontWeight: 600, cursor: 'pointer',
+            boxShadow: '0 0 20px rgba(99,102,241,0.3)',
             transition: 'all 0.2s',
           }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(99,102,241,0.5)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(99,102,241,0.35)'; }}>
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 24px rgba(99,102,241,0.5)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(99,102,241,0.3)'; }}>
             Start free →
           </button>
         </div>
       </nav>
 
-      {/* HERO */}
+      {/* ── HERO ── */}
       <section style={{
-        minHeight: '100vh', display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        textAlign: 'center', padding: '130px 20px 80px',
-        position: 'relative', overflow: 'hidden',
+        position: 'relative', minHeight: '100vh',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        padding: '100px 24px 60px', textAlign: 'center', overflow: 'hidden',
       }}>
+        {/* Hero Glow */}
         <div style={{
-          position: 'absolute', width: 900, height: 700, borderRadius: '50%',
-          background: 'radial-gradient(circle,rgba(99,102,241,0.11) 0%,transparent 70%)',
-          top: '5%', left: '50%', transform: 'translateX(-50%)',
-          pointerEvents: 'none',
-        }} />
-        <div style={{
-          position: 'absolute', width: 400, height: 400, borderRadius: '50%',
-          background: 'radial-gradient(circle,rgba(168,85,247,0.08) 0%,transparent 70%)',
-          top: '30%', right: '5%', pointerEvents: 'none',
+          position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)',
+          width: 900, height: 600, borderRadius: '50%',
+          background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.08) 40%, transparent 70%)',
+          pointerEvents: 'none', zIndex: 0,
         }} />
 
-        <div style={{
+        {/* Badge */}
+        <div className="anim" style={{
           display: 'inline-flex', alignItems: 'center', gap: 8,
-          background: 'rgba(99,102,241,0.10)',
-          border: '1px solid rgba(99,102,241,0.28)',
-          borderRadius: 100, padding: '6px 16px',
-          fontSize: 13, color: '#818cf8', fontWeight: 500,
-          marginBottom: 28, animation: 'fadeUp 0.6s ease both',
+          background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)',
+          borderRadius: 100, padding: '6px 16px', marginBottom: 28,
+          fontSize: 13, color: '#a5b4fc', position: 'relative', zIndex: 1,
         }}>
-          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', animation: 'pulse 2s infinite', display: 'inline-block' }} />
-          Built for marketing agencies · 2,400+ teams worldwide
+          <span>🚀</span> Trusted by 2,400+ agencies worldwide
         </div>
 
-        <h1 style={{
-          fontSize: 'clamp(44px,7.5vw,86px)',
-          fontWeight: 900, lineHeight: 1.04,
-          letterSpacing: '-0.035em', marginBottom: 24,
-          animation: 'fadeUp 0.6s 0.1s ease both',
+        {/* Headline */}
+        <h1 className="anim" style={{
+          fontSize: 'clamp(40px, 6vw, 80px)', fontWeight: 800,
+          lineHeight: 1.1, letterSpacing: '-0.03em',
+          margin: '0 0 20px', maxWidth: 820,
+          position: 'relative', zIndex: 1,
         }}>
-          The agency OS<br />
           <span style={{
-            background: 'linear-gradient(135deg,#6366f1 0%,#8b5cf6 45%,#ec4899 100%)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #a5b4fc 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          }}>that actually ships.</span>
+          }}>The Agency OS That</span>
+          <br />
+          <span style={{
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #c084fc)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>Actually Ships.</span>
         </h1>
 
-        <p style={{
-          fontSize: 18, color: 'rgba(255,255,255,0.52)',
-          maxWidth: 540, lineHeight: 1.75, marginBottom: 44,
-          animation: 'fadeUp 0.6s 0.2s ease both',
+        {/* Sub */}
+        <p className="anim" style={{
+          fontSize: 'clamp(16px, 2vw, 22px)', color: '#94a3b8', maxWidth: 560,
+          margin: '0 0 40px', lineHeight: 1.6, position: 'relative', zIndex: 1,
         }}>
-          Replace Trello, ClickUp, Notion, Slack, and Harvest
-          with one platform built specifically for how agencies work.
+          Replace 6 tools with one platform built for real agencies.
         </p>
 
-        <div style={{
-          display: 'flex', gap: 12, marginBottom: 20,
-          flexWrap: 'wrap', justifyContent: 'center',
-          animation: 'fadeUp 0.6s 0.3s ease both',
-        }}>
+        {/* CTAs */}
+        <div className="anim" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
           <button onClick={() => router.push('/register')} style={{
-            padding: '15px 36px', borderRadius: 12, border: 'none',
-            background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
-            color: 'white', fontSize: 16, fontWeight: 700,
-            cursor: 'pointer', transition: 'all 0.2s',
-            boxShadow: '0 8px 32px rgba(99,102,241,0.38)',
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            border: 'none', color: '#fff', borderRadius: 12,
+            padding: '14px 32px', fontSize: 16, fontWeight: 700,
+            cursor: 'pointer', boxShadow: '0 0 30px rgba(99,102,241,0.4)',
+            transition: 'all 0.25s',
           }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 14px 44px rgba(99,102,241,0.52)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(99,102,241,0.38)'; }}>
-            Start for free →
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 40px rgba(99,102,241,0.6)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 30px rgba(99,102,241,0.4)'; }}>
+            Start Free Trial →
           </button>
           <button onClick={() => router.push('/login')} style={{
-            padding: '15px 32px', borderRadius: 12,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            color: 'rgba(255,255,255,0.75)', fontSize: 16,
-            fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
+            background: 'transparent', border: '1px solid rgba(148,163,184,0.3)',
+            color: '#cbd5e1', borderRadius: 12, padding: '14px 32px',
+            fontSize: 16, fontWeight: 600, cursor: 'pointer', transition: 'all 0.25s',
           }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; }}>
-            Sign in to workspace
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(148,163,184,0.5)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(148,163,184,0.3)'; }}>
+            Book a Demo
           </button>
         </div>
 
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.28)', animation: 'fadeUp 0.6s 0.4s ease both' }}>
-          Free 14-day trial · No credit card required · Cancel anytime
+        {/* Below CTAs */}
+        <p className="anim" style={{ marginTop: 18, color: '#64748b', fontSize: 13, position: 'relative', zIndex: 1 }}>
+          Free 14-day trial · No credit card · Cancel anytime
         </p>
 
         {/* App Mockup */}
-        <div style={{
-          marginTop: 64, width: '100%', maxWidth: 900,
-          border: '1px solid rgba(255,255,255,0.09)',
-          borderRadius: 18, overflow: 'hidden',
-          boxShadow: '0 0 0 1px rgba(99,102,241,0.15), 0 40px 100px rgba(0,0,0,0.6), 0 0 60px rgba(99,102,241,0.12)',
-          animation: 'fadeUp 0.9s 0.5s ease both',
-        }}>
-          <div style={{
-            background: '#111318', padding: '10px 16px',
-            display: 'flex', alignItems: 'center', gap: 8,
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
-          }}>
-            <div style={{ display: 'flex', gap: 6 }}>
-              {['#ff5f57', '#ffbd2e', '#28c840'].map(c => (
-                <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />
-              ))}
-            </div>
-            <div style={{
-              flex: 1, background: 'rgba(255,255,255,0.05)',
-              borderRadius: 6, padding: '4px 12px',
-              fontSize: 12, color: 'rgba(255,255,255,0.3)', textAlign: 'center',
-            }}>app.tasksdone.cloud/dashboard</div>
-          </div>
-          <div style={{ background: '#0c0e1c', padding: '20px 20px 24px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 16 }}>
-              {[
-                { label: 'Active Projects', value: '12', color: '#6366f1' },
-                { label: 'Open Tasks', value: '48', color: '#8b5cf6' },
-                { label: 'Due Today', value: '5', color: '#f59e0b' },
-                { label: 'Team Online', value: '8', color: '#22c55e' },
-              ].map(s => (
-                <div key={s.label} style={{
-                  background: `${s.color}18`,
-                  border: `1px solid ${s.color}28`,
-                  borderRadius: 12, padding: '14px 16px',
-                }}>
-                  <div style={{ fontSize: 10, color: s.color, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 7 }}>{s.label}</div>
-                  <div style={{ fontSize: 30, fontWeight: 900, color: 'white' }}>{s.value}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10 }}>
-              {[
-                { col: 'To Do', color: '#6b7280', tasks: ['Design banner', 'Write copy', 'Research comp'] },
-                { col: 'In Progress', color: '#6366f1', tasks: ['Social campaign', 'FB Ads Q2'] },
-                { col: 'In Review', color: '#f59e0b', tasks: ['Monthly report'] },
-                { col: 'Done', color: '#22c55e', tasks: ['Presentation', 'Brand guide'] },
-              ].map(col => (
-                <div key={col.col} style={{ background: '#111318', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: col.color }} />
-                    <span style={{ fontSize: 10, fontWeight: 700, color: col.color, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{col.col}</span>
-                  </div>
-                  {col.tasks.map(t => (
-                    <div key={t} style={{
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.06)',
-                      borderLeft: `2px solid ${col.color}`,
-                      borderRadius: 6, padding: '7px 9px', marginBottom: 6,
-                      fontSize: 11, color: 'rgba(255,255,255,0.65)',
-                    }}>{t}</div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SOCIAL PROOF STRIP */}
-      <div style={{
-        borderTop: '1px solid rgba(255,255,255,0.05)',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
-        padding: '20px 40px',
-        display: 'flex', justifyContent: 'center', alignItems: 'center',
-        gap: 12, flexWrap: 'wrap',
-      }}>
-        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginRight: 8 }}>Trusted by teams at</span>
-        {['Bolt Agency', 'Pulse Media', 'Neon Studio', 'GridForce', 'Apex Creative', 'Orbit Labs'].map(name => (
-          <span key={name} style={{
-            fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.22)',
-            padding: '5px 16px', borderRadius: 100,
-            border: '1px solid rgba(255,255,255,0.08)',
-            background: 'rgba(255,255,255,0.03)',
-          }}>{name}</span>
-        ))}
-      </div>
-
-      {/* STATS */}
-      <div style={{ padding: '56px 20px', display: 'flex', justifyContent: 'center', gap: 64, flexWrap: 'wrap' }}>
-        {[
-          { value: '2,400+', label: 'Agencies worldwide', color: '#6366f1' },
-          { value: '98%', label: 'Client satisfaction', color: '#22c55e' },
-          { value: '6 tools', label: 'Replaced on average', color: '#8b5cf6' },
-          { value: '4.9 ★', label: 'Average rating', color: '#f59e0b' },
-        ].map(s => (
-          <div key={s.label} className="anim" style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 34, fontWeight: 900, color: s.color, marginBottom: 5 }}>{s.value}</div>
-            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)' }}>{s.label}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* FEATURES */}
-      <section id="features" style={{ padding: '100px 20px', maxWidth: 1140, margin: '0 auto' }}>
-        <div className="anim" style={{ textAlign: 'center', marginBottom: 64 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#6366f1', marginBottom: 14 }}>
-            Everything you need
-          </div>
-          <h2 style={{
-            fontSize: 'clamp(28px,4vw,46px)', fontWeight: 900,
-            letterSpacing: '-0.025em', marginBottom: 16,
-          }}>
-            Built for agencies, not generic teams
-          </h2>
-          <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: 16, maxWidth: 500, margin: '0 auto' }}>
-            Every feature is designed around how marketing agencies actually work — not retrofitted from generic project management tools.
-          </p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
-          {features.map((f, i) => (
-            <div key={f.title} className="anim" style={{
-              background: activeFeature === i ? `${f.color}10` : '#111318',
-              border: `1px solid ${activeFeature === i ? f.color + '40' : 'rgba(255,255,255,0.07)'}`,
-              borderRadius: 16, padding: '24px 24px 26px', transition: 'all 0.35s',
-              boxShadow: activeFeature === i ? `0 8px 32px ${f.color}15` : 'none',
-              cursor: 'default',
-            }}
-              onMouseEnter={e => {
-                setActiveFeature(i);
-                e.currentTarget.style.transform = 'translateY(-4px)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = 'none';
-              }}>
-              <div style={{
-                width: 46, height: 46, borderRadius: 12,
-                background: `${f.color}22`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 22, marginBottom: 16,
-              }}>{f.icon}</div>
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 9 }}>{f.title}</h3>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.48)', lineHeight: 1.65 }}>{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section style={{ padding: '80px 20px', maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
-        <div className="anim" style={{ marginBottom: 60 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#8b5cf6', marginBottom: 14 }}>
-            How it works
-          </div>
-          <h2 style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 900, letterSpacing: '-0.025em' }}>
-            Up and running in under an hour
-          </h2>
-        </div>
-        <div className="anim" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 32 }}>
-          {steps.map((s, i) => (
-            <div key={s.num} style={{ position: 'relative' }}>
-              {i < steps.length - 1 && (
-                <div style={{
-                  position: 'absolute', top: 22, left: '60%', right: '-40%',
-                  height: 1, background: 'linear-gradient(90deg,rgba(99,102,241,0.3),transparent)',
-                  zIndex: 0,
-                }} />
-              )}
-              <div style={{
-                width: 44, height: 44, borderRadius: '50%',
-                background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 13, fontWeight: 800, color: 'white',
-                margin: '0 auto 20px', position: 'relative', zIndex: 1,
-              }}>{s.num}</div>
-              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 10 }}>{s.title}</h3>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.65 }}>{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
-      <section style={{ padding: '80px 20px', maxWidth: 1100, margin: '0 auto' }}>
-        <div className="anim" style={{ textAlign: 'center', marginBottom: 56 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#ec4899', marginBottom: 14 }}>
-            What agencies say
-          </div>
-          <h2 style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 900, letterSpacing: '-0.025em' }}>
-            Loved by 2,400+ agencies
-          </h2>
-        </div>
-        <div className="anim" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
-          {testimonials.map(t => (
-            <div key={t.name} style={{
-              background: '#111318',
-              border: '1px solid rgba(255,255,255,0.07)',
-              borderRadius: 16, padding: '28px 26px',
-              display: 'flex', flexDirection: 'column', gap: 20,
-              transition: 'all 0.25s',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = `${t.color}35`; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.transform = 'none'; }}>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.75 }}>"{t.text}"</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{
-                  width: 40, height: 40, borderRadius: '50%',
-                  background: `linear-gradient(135deg,${t.color},${t.color}88)`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0,
-                }}>{t.avatar}</div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 700 }}>{t.name}</div>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)' }}>{t.role}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section id="pricing" style={{ padding: '100px 20px', maxWidth: 980, margin: '0 auto', textAlign: 'center' }}>
-        <div className="anim" style={{ marginBottom: 48 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#6366f1', marginBottom: 14 }}>
-            Pricing
-          </div>
-          <h2 style={{ fontSize: 'clamp(26px,3.5vw,42px)', fontWeight: 900, letterSpacing: '-0.025em', marginBottom: 14 }}>
-            Simple, honest pricing
-          </h2>
-          <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: 15 }}>
-            No hidden fees. No per-seat surprises. Cancel anytime.
-          </p>
-        </div>
-
         <div className="anim" style={{
-          display: 'inline-flex', alignItems: 'center', gap: 12,
-          marginBottom: 44, background: '#111318',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 100, padding: '6px 22px',
+          marginTop: 60, width: '100%', maxWidth: 900,
+          background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(99,102,241,0.2)',
+          borderRadius: 20, padding: 24, position: 'relative', zIndex: 1,
+          boxShadow: '0 40px 120px rgba(99,102,241,0.15), 0 0 0 1px rgba(99,102,241,0.1)',
         }}>
-          <span style={{ fontSize: 13, color: cycle === 'monthly' ? 'white' : 'rgba(255,255,255,0.38)', fontWeight: cycle === 'monthly' ? 700 : 400 }}>Monthly</span>
-          <div onClick={() => setCycle(c => c === 'monthly' ? 'annual' : 'monthly')} style={{
-            width: 42, height: 23, borderRadius: 12,
-            background: cycle === 'annual' ? '#6366f1' : 'rgba(255,255,255,0.14)',
-            position: 'relative', cursor: 'pointer', transition: 'background 0.25s',
-          }}>
-            <div style={{
-              position: 'absolute', top: 2.5,
-              left: cycle === 'annual' ? 21 : 2.5,
-              width: 18, height: 18, borderRadius: '50%',
-              background: 'white', transition: 'left 0.25s',
-            }} />
+          {/* Mockup Header */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+            <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#ef4444' }} />
+            <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#f59e0b' }} />
+            <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#22c55e' }} />
+            <div style={{ flex: 1, height: 24, background: 'rgba(255,255,255,0.05)', borderRadius: 6, marginLeft: 8 }} />
           </div>
-          <span style={{ fontSize: 13, color: cycle === 'annual' ? 'white' : 'rgba(255,255,255,0.38)', fontWeight: cycle === 'annual' ? 700 : 400 }}>Annual</span>
-          <span style={{ fontSize: 11, fontWeight: 800, color: '#22c55e', background: 'rgba(34,197,94,0.14)', padding: '3px 10px', borderRadius: 100 }}>Save 17%</span>
-        </div>
 
-        <div className="anim" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
-          {[
-            {
-              id: 'free', name: 'Free', monthly: 0, annual: 0,
-              storage: '1 GB', fileLimit: '10 MB/file',
-              highlight: false, badge: null as string | null,
-              features: ['5 clients', '3 team members', '3 projects', 'Basic Kanban', '1 GB storage', 'Community support'],
-            },
-            {
-              id: 'pro', name: 'Pro', monthly: 18, annual: 15,
-              storage: '20 GB', fileLimit: '100 MB/file',
-              highlight: true, badge: 'Most Popular' as string | null,
-              features: ['Unlimited clients', '15 team members', 'All views', 'Content calendar', 'Time tracking & invoices', 'Client portal', '50 AI requests/mo', '20 GB storage', 'Priority support'],
-            },
-            {
-              id: 'agency', name: 'Agency', monthly: 38, annual: 32,
-              storage: '100 GB', fileLimit: '500 MB/file',
-              highlight: false, badge: 'Best Value' as string | null,
-              features: ['Everything in Pro', 'Unlimited team members', 'Unlimited AI requests', 'White-label branding', 'Public API + Webhooks', '100 GB storage', 'Dedicated support'],
-            },
-          ].map(plan => {
-            const price = cycle === 'annual' ? plan.annual : plan.monthly;
-            return (
-              <div key={plan.id} style={{
-                background: plan.highlight ? 'rgba(99,102,241,0.08)' : '#111318',
-                border: `1px solid ${plan.highlight ? '#6366f1' : 'rgba(255,255,255,0.07)'}`,
-                borderRadius: 18, padding: '30px 26px', position: 'relative',
-                boxShadow: plan.highlight ? '0 0 50px rgba(99,102,241,0.14)' : 'none',
+          {/* Stats Row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 20 }}>
+            {[
+              { label: 'Active Projects', value: '24', color: '#6366f1' },
+              { label: 'Tasks Due Today', value: '7', color: '#ec4899' },
+              { label: 'Hours This Week', value: '128h', color: '#10b981' },
+              { label: 'Revenue MTD', value: '$48k', color: '#f59e0b' },
+            ].map((s, i) => (
+              <div key={i} style={{
+                background: 'rgba(255,255,255,0.04)', borderRadius: 10, padding: '14px 16px',
+                border: `1px solid ${s.color}22`,
+              }}>
+                <div style={{ fontSize: 22, fontWeight: 700, color: s.color }}>{s.value}</div>
+                <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Kanban Columns */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+            {[
+              { col: 'Backlog', color: '#64748b', tasks: ['Competitor audit', 'Brand refresh brief'] },
+              { col: 'In Progress', color: '#6366f1', tasks: ['Landing page copy', 'Ad creative batch'] },
+              { col: 'Review', color: '#f59e0b', tasks: ['Campaign report', 'Client deck v2'] },
+              { col: 'Done', color: '#22c55e', tasks: ['SEO audit', 'Social schedule'] },
+            ].map((col, i) => (
+              <div key={i} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: col.color }} />
+                  <span style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>{col.col}</span>
+                </div>
+                {col.tasks.map((t, j) => (
+                  <div key={j} style={{
+                    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: 7, padding: '8px 10px', marginBottom: 7,
+                    fontSize: 12, color: '#cbd5e1',
+                  }}>{t}</div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SOCIAL PROOF MARQUEE ── */}
+      <div style={{ position: 'relative', overflow: 'hidden', padding: '24px 0', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{
+          position: 'absolute', left: 0, top: 0, bottom: 0, width: 120, zIndex: 2,
+          background: 'linear-gradient(to right, #07080f, transparent)',
+        }} />
+        <div style={{
+          position: 'absolute', right: 0, top: 0, bottom: 0, width: 120, zIndex: 2,
+          background: 'linear-gradient(to left, #07080f, transparent)',
+        }} />
+        <div style={{ display: 'flex', gap: 60, animation: 'marquee 22s linear infinite', whiteSpace: 'nowrap', width: 'max-content' }}>
+          {[...logos, ...logos].map((l, i) => (
+            <span key={i} style={{ color: '#334155', fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase' }}>{l}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── PROBLEM SECTION ── */}
+      <section style={{ padding: 'clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
+          <div className="anim" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#f87171', marginBottom: 14 }}>
+            PAIN POINTS
+          </div>
+          <h2 className="anim" style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, marginBottom: 16, letterSpacing: '-0.03em' }}>
+            Sound familiar?
+          </h2>
+          <p className="anim" style={{ color: '#64748b', fontSize: 16, marginBottom: 56 }}>
+            If you're running an agency on a patchwork of tools, you already know the pain.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 18 }}>
+            {painPoints.map((p, i) => (
+              <div key={i} className="anim" style={{
+                background: '#111318', borderRadius: 14, padding: '20px 22px',
+                borderLeft: '3px solid rgba(248,113,113,0.5)', textAlign: 'left',
                 transition: 'transform 0.2s',
               }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; }}>
-                {plan.badge && (
-                  <div style={{
-                    position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)',
-                    background: plan.highlight ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : 'linear-gradient(135deg,#f59e0b,#ef4444)',
-                    color: 'white', fontSize: 10, fontWeight: 800,
-                    padding: '4px 14px', borderRadius: 100, whiteSpace: 'nowrap',
-                  }}>{plan.badge}</div>
-                )}
-                <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 18 }}>{plan.name}</div>
-                <div style={{ marginBottom: 8 }}>
-                  <span style={{ fontSize: 40, fontWeight: 900 }}>${price}</span>
-                  <span style={{ color: 'rgba(255,255,255,0.38)', fontSize: 14 }}>{price === 0 ? ' forever' : '/mo'}</span>
-                </div>
-                {cycle === 'annual' && price > 0 && (
-                  <div style={{ fontSize: 12, color: '#22c55e', marginBottom: 10 }}>Billed ${price * 12}/year</div>
-                )}
-                <div style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: 8, padding: '8px 12px', marginBottom: 22,
-                  fontSize: 12, color: 'rgba(255,255,255,0.55)',
-                  display: 'flex', alignItems: 'center', gap: 6,
-                }}>
-                  💾 <strong style={{ color: 'white' }}>{plan.storage}</strong> · {plan.fileLimit} max
-                </div>
-                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 9, marginBottom: 26, textAlign: 'left' }}>
-                  {plan.features.map(f => (
-                    <li key={f} style={{ display: 'flex', gap: 9, fontSize: 13, color: 'rgba(255,255,255,0.58)', alignItems: 'flex-start' }}>
-                      <span style={{ color: '#22c55e', flexShrink: 0, marginTop: 1, fontWeight: 700 }}>✓</span>{f}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}>
+                <div style={{ fontSize: 26, marginBottom: 10 }}>{p.icon}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#f87171', marginBottom: 6 }}>{p.title}</div>
+                <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>{p.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SOLUTION SECTION ── */}
+      <section style={{ padding: 'clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px)', background: 'rgba(99,102,241,0.03)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
+          <div className="anim" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#818cf8', marginBottom: 14 }}>
+            THE SOLUTION
+          </div>
+          <h2 className="anim" style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, marginBottom: 16, letterSpacing: '-0.03em' }}>
+            One platform. Every workflow.
+          </h2>
+          <p className="anim" style={{ color: '#64748b', fontSize: 16, maxWidth: 580, margin: '0 auto 56px' }}>
+            FlowOS replaces every disconnected tool with a unified workspace purpose-built for agencies.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+            {[
+              {
+                icon: '🏗️', title: 'Unified Workspace', accent: '#6366f1',
+                items: ['Task & project management', 'Team chat & collaboration', 'Time tracking', 'All in one place'],
+                bg: 'rgba(99,102,241,0.06)', border: 'rgba(99,102,241,0.25)',
+              },
+              {
+                icon: '🤝', title: 'Client Intelligence', accent: '#8b5cf6',
+                items: ['Branded client portal', 'Invoicing & payments', 'Approval workflows', 'Real-time reporting'],
+                bg: 'rgba(139,92,246,0.06)', border: 'rgba(139,92,246,0.25)',
+              },
+              {
+                icon: '🧠', title: 'AI-Powered', accent: '#06b6d4',
+                items: ['Content generation', 'Competitor analysis', 'Campaign builder', 'Strategy automation'],
+                bg: 'rgba(6,182,212,0.06)', border: 'rgba(6,182,212,0.25)',
+              },
+            ].map((s, i) => (
+              <div key={i} className="anim" style={{
+                background: s.bg, border: `1px solid ${s.border}`,
+                borderRadius: 18, padding: '32px 28px', textAlign: 'left',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+              }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 16px 40px ${s.accent}22`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'; }}>
+                <div style={{ fontSize: 36, marginBottom: 16 }}>{s.icon}</div>
+                <h3 style={{ fontSize: 22, fontWeight: 700, color: s.accent, marginBottom: 16 }}>{s.title}</h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {s.items.map((item, j) => (
+                    <li key={j} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, fontSize: 14, color: '#94a3b8' }}>
+                      <span style={{ color: s.accent, fontSize: 16 }}>✓</span> {item}
                     </li>
                   ))}
                 </ul>
-                <button onClick={() => router.push('/register')} style={{
-                  width: '100%', padding: '12px',
-                  borderRadius: 10, border: 'none', fontSize: 14,
-                  fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
-                  background: plan.highlight ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : 'rgba(255,255,255,0.07)',
-                  color: plan.highlight ? 'white' : 'rgba(255,255,255,0.65)',
-                  boxShadow: plan.highlight ? '0 4px 18px rgba(99,102,241,0.32)' : 'none',
-                }}>
-                  {plan.id === 'free' ? 'Start for free' : `Start ${plan.name} trial →`}
-                </button>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" style={{ padding: '80px 20px', maxWidth: 700, margin: '0 auto' }}>
-        <div className="anim" style={{ textAlign: 'center', marginBottom: 52 }}>
-          <h2 style={{ fontSize: 'clamp(26px,3.5vw,40px)', fontWeight: 900, letterSpacing: '-0.025em' }}>
-            Frequently asked questions
-          </h2>
+      {/* ── FEATURES ── */}
+      <section id="features" style={{ padding: 'clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
+            <div className="anim" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#a78bfa', marginBottom: 14 }}>
+              EVERYTHING YOU NEED
+            </div>
+            <h2 className="anim" style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, marginBottom: 14, letterSpacing: '-0.03em' }}>
+              Every tool. Zero tab-switching.
+            </h2>
+            <p className="anim" style={{ color: '#64748b', fontSize: 16, maxWidth: 500, margin: '0 auto' }}>
+              9 purpose-built modules that work together so your team doesn't have to juggle apps.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 18 }}>
+            {features.map((f, i) => (
+              <div key={i} className="anim" style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+                borderRadius: 16, padding: '24px 22px', cursor: 'default',
+                transition: 'all 0.25s',
+              }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.transform = 'translateY(-4px)';
+                  el.style.borderColor = f.color + '55';
+                  el.style.background = f.color + '0a';
+                  el.style.boxShadow = `0 12px 32px ${f.color}18`;
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLDivElement;
+                  el.style.transform = 'translateY(0)';
+                  el.style.borderColor = 'rgba(255,255,255,0.07)';
+                  el.style.background = 'rgba(255,255,255,0.03)';
+                  el.style.boxShadow = 'none';
+                }}>
+                <div style={{ fontSize: 32, marginBottom: 14 }}>{f.icon}</div>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: f.color, marginBottom: 8 }}>{f.title}</h3>
+                <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.65, margin: 0 }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="anim">
+      </section>
+
+      {/* ── HOW IT WORKS ── */}
+      <section style={{ padding: 'clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px)', background: 'rgba(99,102,241,0.03)' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+          <div className="anim" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#818cf8', marginBottom: 14 }}>
+            GET STARTED
+          </div>
+          <h2 className="anim" style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, marginBottom: 56, letterSpacing: '-0.03em' }}>
+            Up and running in minutes.
+          </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 32, position: 'relative' }}>
+            {[
+              { step: '01', title: 'Create your workspace', desc: 'Set up in 60 seconds. Invite team. Add first client.' },
+              { step: '02', title: 'Connect your work', desc: 'Import from Trello, Asana, ClickUp — or start fresh in minutes.' },
+              { step: '03', title: 'Ship faster', desc: 'Assign, track, communicate, deliver. All without leaving FlowOS.' },
+            ].map((s, i) => (
+              <div key={i} className="anim" style={{ position: 'relative' }}>
+                <div style={{
+                  width: 56, height: 56, borderRadius: 16,
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 18, fontWeight: 800, color: '#fff',
+                  margin: '0 auto 18px',
+                  boxShadow: '0 0 24px rgba(99,102,241,0.4)',
+                }}>{s.step}</div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 8 }}>{s.title}</h3>
+                <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.65 }}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section style={{ padding: 'clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
+            <div className="anim" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#a78bfa', marginBottom: 14 }}>
+              SOCIAL PROOF
+            </div>
+            <h2 className="anim" style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, letterSpacing: '-0.03em' }}>
+              Agencies love it.
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 22 }}>
+            {testimonials.map((t, i) => (
+              <div key={i} className="anim" style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 18, padding: '28px 26px',
+                transition: 'transform 0.2s',
+              }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}>
+                <div style={{ color: '#f59e0b', fontSize: 16, marginBottom: 16 }}>⭐⭐⭐⭐⭐</div>
+                <p style={{ fontSize: 15, lineHeight: 1.7, color: '#cbd5e1', marginBottom: 22 }}>"{t.quote}"</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{
+                    width: 40, height: 40, borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${t.color}, ${t.color}99)`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 13, fontWeight: 700, color: '#fff',
+                  }}>{t.initials}</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700 }}>{t.name}</div>
+                    <div style={{ fontSize: 12, color: '#64748b' }}>{t.role}, {t.company}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── STATS BAR ── */}
+      <section style={{
+        padding: 'clamp(40px, 5vw, 60px) clamp(20px, 5vw, 80px)',
+        background: 'rgba(99,102,241,0.06)',
+        borderTop: '1px solid rgba(99,102,241,0.15)',
+        borderBottom: '1px solid rgba(99,102,241,0.15)',
+      }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 32, textAlign: 'center' }}>
           {[
-            { q: 'Is TasksDone really free to start?', a: 'Yes! The Free plan is free forever. No credit card required. You get 5 clients, 3 projects, and 1GB of storage.' },
-            { q: 'Can I upgrade or downgrade anytime?', a: 'Absolutely. Upgrades take effect immediately. Downgrades take effect at the end of your billing period.' },
-            { q: 'What happens to my files if I downgrade?', a: 'Your files stay safe. You just cannot upload new files until you are under the storage limit of your plan.' },
-            { q: 'How does the Client Portal work?', a: 'Each client gets a unique login to see only their projects, approve deliverables, and view invoices — without seeing any internal team activity.' },
-            { q: 'Do you have a mobile app?', a: 'The web app is fully responsive and works great on mobile. A dedicated native app is on our roadmap for Q3 2025.' },
-            { q: 'How does AI competitor analysis work?', a: 'Enter your brand, industry, and up to 5 competitor URLs. Our AI analyzes them and generates a full SWOT report with prioritized quick-win opportunities.' },
-          ].map((item, i) => (
-            <div key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-              <button onClick={() => setFaqOpen(faqOpen === i ? null : i)} style={{
-                width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                padding: '19px 0', background: 'none', border: 'none',
-                color: 'white', fontSize: 15, fontWeight: 500, cursor: 'pointer', textAlign: 'left',
-              }}>
-                {item.q}
-                <span style={{
-                  fontSize: 20, color: 'rgba(255,255,255,0.38)',
-                  transform: faqOpen === i ? 'rotate(180deg)' : 'none',
-                  transition: 'transform 0.25s', flexShrink: 0, marginLeft: 20,
-                }}>⌄</span>
-              </button>
-              {faqOpen === i && (
-                <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.48)', lineHeight: 1.75, paddingBottom: 20, animation: 'fadeUp 0.2s ease' }}>
-                  {item.a}
-                </p>
-              )}
+            { value: '2,400+', label: 'Agencies worldwide', color: '#818cf8' },
+            { value: '98%', label: 'Client satisfaction', color: '#34d399' },
+            { value: '6', label: 'Tools replaced on average', color: '#f472b6' },
+            { value: '4.9★', label: 'Average rating', color: '#fbbf24' },
+          ].map((s, i) => (
+            <div key={i} className="anim">
+              <div style={{ fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 800, color: s.color, letterSpacing: '-0.03em' }}>{s.value}</div>
+              <div style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* FINAL CTA */}
-      <section style={{ padding: '110px 20px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      {/* ── PRICING ── */}
+      <section id="pricing" style={{ padding: 'clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
+          <div className="anim" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#818cf8', marginBottom: 14 }}>
+            PRICING
+          </div>
+          <h2 className="anim" style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, marginBottom: 14, letterSpacing: '-0.03em' }}>
+            Simple, honest pricing.
+          </h2>
+          <p className="anim" style={{ color: '#64748b', fontSize: 16, marginBottom: 36 }}>
+            Start free. Scale as you grow.
+          </p>
+
+          {/* Toggle */}
+          <div className="anim" style={{ display: 'inline-flex', alignItems: 'center', gap: 12, background: 'rgba(255,255,255,0.05)', borderRadius: 100, padding: '4px 6px', marginBottom: 52, border: '1px solid rgba(255,255,255,0.08)' }}>
+            {(['monthly', 'annual'] as const).map(c => (
+              <button key={c} onClick={() => setCycle(c)} style={{
+                background: cycle === c ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                border: 'none', borderRadius: 100, padding: '8px 20px',
+                fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                color: cycle === c ? '#fff' : '#64748b',
+                transition: 'all 0.2s',
+              }}>
+                {c === 'monthly' ? 'Monthly' : (
+                  <span>Annual <span style={{ fontSize: 11, background: 'rgba(52,211,153,0.2)', color: '#34d399', padding: '2px 8px', borderRadius: 100, marginLeft: 6 }}>Save 17%</span></span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Plans */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 22, maxWidth: 960, margin: '0 auto' }}>
+            {/* Free */}
+            <div className="anim" style={{
+              background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 20, padding: '32px 28px', textAlign: 'left',
+              transition: 'transform 0.2s',
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}>
+              <div style={{ fontSize: 13, color: '#64748b', marginBottom: 6 }}>Free</div>
+              <div style={{ fontSize: 40, fontWeight: 800, marginBottom: 4 }}>$0</div>
+              <div style={{ fontSize: 13, color: '#64748b', marginBottom: 24 }}>forever</div>
+              {['3 team members', '5 active projects', 'Task management', 'Basic time tracking', 'Community support'].map((f, j) => (
+                <div key={j} style={{ display: 'flex', gap: 10, marginBottom: 10, fontSize: 14, color: '#94a3b8' }}>
+                  <span style={{ color: '#6366f1' }}>✓</span>{f}
+                </div>
+              ))}
+              <button onClick={() => router.push('/register')} style={{
+                width: '100%', marginTop: 24, background: 'transparent',
+                border: '1px solid rgba(99,102,241,0.4)', color: '#a5b4fc',
+                borderRadius: 10, padding: '12px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(99,102,241,0.1)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}>
+                Get started free
+              </button>
+            </div>
+
+            {/* Pro */}
+            <div className="anim" style={{
+              background: 'linear-gradient(145deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))',
+              border: '1px solid rgba(99,102,241,0.4)',
+              borderRadius: 20, padding: '32px 28px', textAlign: 'left', position: 'relative',
+              boxShadow: '0 0 40px rgba(99,102,241,0.2)',
+              transform: 'scale(1.02)',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.02) translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 60px rgba(99,102,241,0.35)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.02) translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 40px rgba(99,102,241,0.2)'; }}>
+              <div style={{
+                position: 'absolute', top: -12, right: 20,
+                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                borderRadius: 100, padding: '4px 14px', fontSize: 11, fontWeight: 700, color: '#fff',
+              }}>Most Popular</div>
+              <div style={{ fontSize: 13, color: '#a5b4fc', marginBottom: 6 }}>Pro</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                <span style={{ fontSize: 40, fontWeight: 800 }}>${cycle === 'monthly' ? proMonthly : proAnnual}</span>
+                <span style={{ fontSize: 14, color: '#64748b' }}>/mo</span>
+              </div>
+              {cycle === 'annual' && <div style={{ fontSize: 12, color: '#34d399', marginTop: 2 }}>billed annually</div>}
+              <div style={{ fontSize: 13, color: '#64748b', marginBottom: 24, marginTop: cycle === 'annual' ? 6 : 4 }}>per workspace</div>
+              {['Unlimited team members', 'Unlimited projects', 'Everything in Free', 'AI features (100 credits/mo)', 'Client Portal', 'Time tracking + invoicing', 'Priority support'].map((f, j) => (
+                <div key={j} style={{ display: 'flex', gap: 10, marginBottom: 10, fontSize: 14, color: '#e2e8f0' }}>
+                  <span style={{ color: '#818cf8' }}>✓</span>{f}
+                </div>
+              ))}
+              <button onClick={() => router.push('/register')} style={{
+                width: '100%', marginTop: 24,
+                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                border: 'none', color: '#fff',
+                borderRadius: 10, padding: '12px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer',
+                boxShadow: '0 0 20px rgba(99,102,241,0.4)',
+                transition: 'all 0.2s',
+              }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 30px rgba(99,102,241,0.6)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(99,102,241,0.4)'; }}>
+                Start free trial
+              </button>
+            </div>
+
+            {/* Agency */}
+            <div className="anim" style={{
+              background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 20, padding: '32px 28px', textAlign: 'left', position: 'relative',
+              transition: 'transform 0.2s',
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}>
+              <div style={{
+                position: 'absolute', top: -12, right: 20,
+                background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.3)',
+                borderRadius: 100, padding: '4px 14px', fontSize: 11, fontWeight: 700, color: '#34d399',
+              }}>Best Value</div>
+              <div style={{ fontSize: 13, color: '#64748b', marginBottom: 6 }}>Agency</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                <span style={{ fontSize: 40, fontWeight: 800 }}>${cycle === 'monthly' ? agencyMonthly : agencyAnnual}</span>
+                <span style={{ fontSize: 14, color: '#64748b' }}>/mo</span>
+              </div>
+              {cycle === 'annual' && <div style={{ fontSize: 12, color: '#34d399', marginTop: 2 }}>billed annually</div>}
+              <div style={{ fontSize: 13, color: '#64748b', marginBottom: 24, marginTop: cycle === 'annual' ? 6 : 4 }}>per workspace</div>
+              {['Everything in Pro', 'AI features (unlimited)', 'White-label portal', 'Custom domain', 'Advanced analytics', 'API access', 'Dedicated success manager'].map((f, j) => (
+                <div key={j} style={{ display: 'flex', gap: 10, marginBottom: 10, fontSize: 14, color: '#94a3b8' }}>
+                  <span style={{ color: '#34d399' }}>✓</span>{f}
+                </div>
+              ))}
+              <button onClick={() => router.push('/register')} style={{
+                width: '100%', marginTop: 24, background: 'transparent',
+                border: '1px solid rgba(52,211,153,0.4)', color: '#34d399',
+                borderRadius: 10, padding: '12px 0', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(52,211,153,0.08)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}>
+                Get Agency plan
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section id="faq" style={{ padding: 'clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px)', background: 'rgba(99,102,241,0.03)' }}>
+        <div style={{ maxWidth: 720, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
+            <div className="anim" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#818cf8', marginBottom: 14 }}>
+              FAQ
+            </div>
+            <h2 className="anim" style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 800, letterSpacing: '-0.03em' }}>
+              Frequently asked questions.
+            </h2>
+          </div>
+
+          {faqs.map((f, i) => (
+            <div key={i} className="anim" style={{
+              borderBottom: '1px solid rgba(255,255,255,0.07)',
+              overflow: 'hidden',
+            }}>
+              <button onClick={() => setFaqOpen(faqOpen === i ? null : i)} style={{
+                width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '20px 0', background: 'transparent', border: 'none',
+                color: '#e2e8f0', fontSize: 15, fontWeight: 600, cursor: 'pointer', textAlign: 'left',
+              }}>
+                {f.q}
+                <span style={{
+                  transition: 'transform 0.25s',
+                  transform: faqOpen === i ? 'rotate(45deg)' : 'rotate(0deg)',
+                  color: '#6366f1', fontSize: 22, lineHeight: 1, flexShrink: 0, marginLeft: 12,
+                }}>+</span>
+              </button>
+              <div style={{
+                maxHeight: faqOpen === i ? 300 : 0,
+                overflow: 'hidden', transition: 'max-height 0.35s ease',
+              }}>
+                <p style={{ paddingBottom: 20, color: '#64748b', fontSize: 14, lineHeight: 1.7, margin: 0 }}>{f.a}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ── */}
+      <section style={{
+        padding: 'clamp(80px, 10vw, 120px) clamp(20px, 5vw, 80px)',
+        textAlign: 'center', position: 'relative', overflow: 'hidden',
+      }}>
         <div style={{
-          position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse at center,rgba(99,102,241,0.13) 0%,transparent 70%)',
+          position: 'absolute', top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 700, height: 400, borderRadius: '50%',
+          background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.15) 0%, transparent 70%)',
           pointerEvents: 'none',
         }} />
-        <div className="anim">
-          <div style={{
-            display: 'inline-block', fontSize: 11, fontWeight: 800,
-            letterSpacing: '2.5px', textTransform: 'uppercase', color: '#6366f1',
-            marginBottom: 18,
-          }}>Get started today</div>
-          <h2 style={{
-            fontSize: 'clamp(32px,5.5vw,60px)', fontWeight: 900,
-            letterSpacing: '-0.035em', marginBottom: 18,
-          }}>Ready to get things done?</h2>
-          <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: 17, marginBottom: 40 }}>
-            Join 2,400+ agencies. Free to start. No credit card required.
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div className="anim" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#818cf8', marginBottom: 20 }}>
+            GET STARTED TODAY
+          </div>
+          <h2 className="anim" style={{ fontSize: 'clamp(28px, 5vw, 56px)', fontWeight: 800, marginBottom: 18, letterSpacing: '-0.03em', maxWidth: 700, margin: '0 auto 18px' }}>
+            Ready to replace your tool stack?
+          </h2>
+          <p className="anim" style={{ color: '#64748b', fontSize: 16, marginBottom: 40 }}>
+            Join 2,400+ agencies. Free to start, scales with your growth.
           </p>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="anim" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => router.push('/register')} style={{
-              padding: '17px 44px', borderRadius: 12, border: 'none',
-              background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
-              color: 'white', fontSize: 17, fontWeight: 800,
-              cursor: 'pointer', transition: 'all 0.2s',
-              boxShadow: '0 10px 44px rgba(99,102,241,0.42)',
+              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+              border: 'none', color: '#fff', borderRadius: 12,
+              padding: '14px 36px', fontSize: 16, fontWeight: 700, cursor: 'pointer',
+              boxShadow: '0 0 32px rgba(99,102,241,0.45)',
+              transition: 'all 0.25s',
             }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 18px 56px rgba(99,102,241,0.55)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 10px 44px rgba(99,102,241,0.42)'; }}>
-              Start for free →
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 40px rgba(99,102,241,0.6)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 32px rgba(99,102,241,0.45)'; }}>
+              Start for Free →
             </button>
             <button onClick={() => router.push('/login')} style={{
-              padding: '17px 36px', borderRadius: 12,
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.12)',
-              color: 'rgba(255,255,255,0.7)', fontSize: 17,
-              fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
+              background: 'transparent', border: '1px solid rgba(148,163,184,0.3)',
+              color: '#94a3b8', borderRadius: 12, padding: '14px 32px',
+              fontSize: 16, fontWeight: 600, cursor: 'pointer', transition: 'all 0.25s',
             }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.color = '#fff'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}>
-              Sign in
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}>
+              Sign in to workspace
             </button>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ── FOOTER ── */}
       <footer style={{
-        padding: '36px 5vw',
-        borderTop: '1px solid rgba(255,255,255,0.06)',
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'space-between', flexWrap: 'wrap', gap: 16,
+        borderTop: '1px solid rgba(255,255,255,0.07)',
+        padding: 'clamp(32px, 4vw, 48px) clamp(20px, 5vw, 80px)',
+        display: 'flex', flexWrap: 'wrap', gap: 24,
+        alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
-            width: 30, height: 30, borderRadius: 8,
-            background: 'linear-gradient(135deg,#6366f1,#a855f7)',
+            width: 30, height: 30, borderRadius: 7,
+            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '0.8rem', fontWeight: 800, color: '#fff',
+            fontSize: 16, fontWeight: 800, color: '#fff',
           }}>T</div>
           <span style={{
-            fontWeight: 800, fontSize: '1.1rem',
-            background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
+            fontSize: 16, fontWeight: 700,
+            background: 'linear-gradient(90deg, #818cf8, #c084fc)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           }}>TasksDone</span>
         </div>
-        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.26)' }}>
-          © 2025 TasksDone · Built for marketing agencies
-        </div>
-        <div style={{ display: 'flex', gap: 22 }}>
+
+        {/* Links */}
+        <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
+          {['Features', 'Pricing', 'FAQ'].map(l => (
+            <a key={l} href={`#${l.toLowerCase()}`} style={{ color: '#64748b', fontSize: 13, textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}>{l}</a>
+          ))}
           {['Privacy', 'Terms', 'Support'].map(l => (
-            <a key={l} href="#" style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', textDecoration: 'none', transition: 'color 0.2s' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>
-              {l}
-            </a>
+            <a key={l} href="#" style={{ color: '#64748b', fontSize: 13, textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#64748b')}>{l}</a>
           ))}
         </div>
+
+        <div style={{ fontSize: 12, color: '#334155' }}>© 2025 TasksDone</div>
       </footer>
 
+      {/* ── GLOBAL STYLES ── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(22px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50%       { opacity: 0.5; transform: scale(1.4); }
-        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; }
+
         .anim {
           opacity: 0;
           transform: translateY(28px);
-          transition: opacity 0.65s ease, transform 0.65s ease;
+          transition: opacity 0.6s ease, transform 0.6s ease;
         }
         .anim.visible {
           opacity: 1;
           transform: translateY(0);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        @media (max-width: 768px) {
-          nav > div:nth-child(2) { display: none !important; }
+
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
+
         @media (max-width: 640px) {
-          section > div[style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }
-          section > div[style*="grid-template-columns: repeat(4"] { grid-template-columns: repeat(2,1fr) !important; }
+          .nav-links { display: none !important; }
         }
       `}</style>
     </div>
