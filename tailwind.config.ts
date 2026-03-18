@@ -5,23 +5,27 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        display: ['Syne', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
         brand: {
-          blue: '#3b82f6',
-          purple: '#8b5cf6',
-          pink: '#ec4899',
-          green: '#10b981',
+          purple: '#7c6fe0',
+          blue: '#4a9eff',
+          pink: '#ff6b9d',
+          teal: '#00c9b1',
+          green: '#4caf82',
+          yellow: '#ffc107',
+          orange: '#ff7043',
+          red: '#ef5350',
         },
         dark: {
-          900: '#06080f',
-          800: '#0d1117',
-          700: '#161b27',
-          600: '#1e2535',
-          500: '#2a3347',
+          900: '#0c0d14',
+          800: '#13141f',
+          700: '#1a1b28',
+          600: '#22233a',
+          500: '#2e3050',
         },
       },
       animation: {
