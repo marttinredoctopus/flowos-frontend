@@ -769,7 +769,7 @@ function BrandGuidelinesTab() {
               <button onClick={() => editing ? save() : setEditing(true)}
                 disabled={saving}
                 style={{
-                  padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                  padding: '7px 16px', borderRadius: 8, cursor: 'pointer',
                   background: editing ? 'var(--grad-primary)' : 'var(--card)',
                   color: editing ? 'white' : 'var(--text-2)',
                   border: editing ? 'none' : '1px solid var(--border)',
