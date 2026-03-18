@@ -42,8 +42,7 @@ export default function RegisterPage() {
     setError('');
     setLoading(true);
     try {
-      await api.post('/auth/register', { name, email, password, orgName });
-      const { data } = await api.post('/auth/login', { email, password });
+      const { data } = await api.post('/auth/register', { name, email, password, orgName });
       setAuth(data.user, data.accessToken);
       (window as any).__TASKSDONE_AUTH_TOKEN__ = data.accessToken;
       router.push('/dashboard');
