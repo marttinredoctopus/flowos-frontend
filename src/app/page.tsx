@@ -345,7 +345,7 @@ export default function LandingPage() {
             One platform. Every workflow.
           </h2>
           <p className="anim" style={{ color: '#64748b', fontSize: 16, maxWidth: 580, margin: '0 auto 56px' }}>
-            FlowOS replaces every disconnected tool with a unified workspace purpose-built for agencies.
+            TasksDone replaces every disconnected tool with a unified workspace purpose-built for agencies.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
@@ -447,7 +447,7 @@ export default function LandingPage() {
             {[
               { step: '01', title: 'Create your workspace', desc: 'Set up in 60 seconds. Invite team. Add first client.' },
               { step: '02', title: 'Connect your work', desc: 'Import from Trello, Asana, ClickUp — or start fresh in minutes.' },
-              { step: '03', title: 'Ship faster', desc: 'Assign, track, communicate, deliver. All without leaving FlowOS.' },
+              { step: '03', title: 'Ship faster', desc: 'Assign, track, communicate, deliver. All without leaving TasksDone.' },
             ].map((s, i) => (
               <div key={i} className="anim" style={{ position: 'relative' }}>
                 <div style={{

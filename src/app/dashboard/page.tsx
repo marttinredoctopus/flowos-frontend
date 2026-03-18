@@ -23,7 +23,7 @@ function Greeting({ subtitle }: { subtitle?: string }) {
         {subtitle || "Here's your agency overview for today."}
       </p>
       <p className="text-xs font-medium" style={{ color: 'var(--text-dim, var(--text-muted))' }}>
-        {dateStr} · FlowOS
+        {dateStr} · TasksDone
       </p>
     </div>
   );
