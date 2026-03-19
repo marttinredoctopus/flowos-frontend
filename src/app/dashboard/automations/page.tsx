@@ -5,21 +5,21 @@ import apiClient from '@/lib/apiClient';
 import toast from 'react-hot-toast';
 
 const TRIGGERS = [
-  { value: 'task_completed',   label: 'Task Completed',      icon: '✅' },
-  { value: 'task_created',     label: 'Task Created',        icon: '📋' },
-  { value: 'task_overdue',     label: 'Task Overdue',        icon: '⏰' },
-  { value: 'client_created',   label: 'New Client Added',    icon: '👤' },
-  { value: 'invoice_created',  label: 'Invoice Created',     icon: '🧾' },
-  { value: 'invoice_paid',     label: 'Invoice Paid',        icon: '💰' },
-  { value: 'project_created',  label: 'Project Created',     icon: '📁' },
-  { value: 'project_completed',label: 'Project Completed',   icon: '🏆' },
+  { value: 'task_completed',    label: 'Task Completed',    color: 'var(--emerald)' },
+  { value: 'task_created',      label: 'Task Created',      color: 'var(--indigo)' },
+  { value: 'task_overdue',      label: 'Task Overdue',      color: 'var(--rose)' },
+  { value: 'client_created',    label: 'New Client Added',  color: 'var(--cyan)' },
+  { value: 'invoice_created',   label: 'Invoice Created',   color: 'var(--amber)' },
+  { value: 'invoice_paid',      label: 'Invoice Paid',      color: 'var(--emerald)' },
+  { value: 'project_created',   label: 'Project Created',   color: 'var(--violet)' },
+  { value: 'project_completed', label: 'Project Completed', color: 'var(--emerald)' },
 ];
 
 const ACTIONS = [
-  { value: 'send_email',           label: 'Send Email',            icon: '📧' },
-  { value: 'create_task',          label: 'Create Task',           icon: '✏️' },
-  { value: 'create_notification',  label: 'Send Notification',     icon: '🔔' },
-  { value: 'send_webhook',         label: 'Trigger Webhook',       icon: '🔗' },
+  { value: 'send_email',          label: 'Send Email',         color: 'var(--cyan)' },
+  { value: 'create_task',         label: 'Create Task',        color: 'var(--indigo)' },
+  { value: 'create_notification', label: 'Send Notification',  color: 'var(--violet)' },
+  { value: 'send_webhook',        label: 'Trigger Webhook',    color: 'var(--amber)' },
 ];
 
 const INPUT  = 'w-full px-3 py-2.5 rounded-xl text-sm transition focus:outline-none focus:ring-2 focus:ring-violet-500/40';
@@ -125,7 +125,7 @@ export default function AutomationsPage() {
                 </div>
                 <select className={SELECT} style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }}
                   value={form.triggerEvent} onChange={e => setForm((f: any) => ({ ...f, triggerEvent: e.target.value }))}>
-                  {TRIGGERS.map(t => <option key={t.value} value={t.value}>{t.icon} {t.label}</option>)}
+                  {TRIGGERS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
 
@@ -136,7 +136,7 @@ export default function AutomationsPage() {
                 </div>
                 <select className={SELECT + ' mb-3'} style={{ background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--text)' }}
                   value={form.actionType} onChange={e => setForm((f: any) => ({ ...f, actionType: e.target.value }))}>
-                  {ACTIONS.map(a => <option key={a.value} value={a.value}>{a.icon} {a.label}</option>)}
+                  {ACTIONS.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
                 </select>
 
                 {form.actionType === 'create_notification' && (
@@ -220,7 +220,7 @@ export default function AutomationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-display text-2xl font-bold" style={{ color: 'var(--text)' }}>Automations <span className="gradient-text">⚡</span></h1>
+          <h1 className="font-display text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text)' }}>Automations <Zap size={20} className="text-violet-400" /></h1>
           <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>Build IF/THEN rules to automate your workflow</p>
         </div>
         <button onClick={() => setShowModal(true)} className={BTN + ' flex items-center gap-2'}>
@@ -247,7 +247,7 @@ export default function AutomationsPage() {
         <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: 'var(--card)' }} />)}</div>
       ) : automations.length === 0 ? (
         <div className="rounded-2xl p-12 text-center" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
-          <div className="text-5xl mb-3">⚡</div>
+          <img src="/icons/3d/robot.svg" alt="" className="w-20 h-20 mx-auto mb-4 opacity-90" />
           <h3 className="font-bold mb-1" style={{ color: 'var(--text)' }}>No automations yet</h3>
           <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>Create your first rule to automate repetitive tasks</p>
           <button onClick={() => setShowModal(true)} className={BTN}>Create First Rule</button>
@@ -259,8 +259,8 @@ export default function AutomationsPage() {
             const action  = actionLabel(rule.action_type);
             return (
               <div key={rule.id} className="rounded-2xl p-5 flex items-center gap-4" style={{ background: 'var(--card)', border: `1px solid ${rule.is_active ? 'rgba(124,111,224,0.2)' : 'var(--border)'}` }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg" style={{ background: rule.is_active ? 'rgba(124,111,224,0.15)' : 'var(--surface)' }}>
-                  {trigger?.icon || '⚡'}
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: rule.is_active ? 'rgba(124,111,224,0.15)' : 'var(--surface)' }}>
+                  <Zap size={18} color={rule.is_active ? 'var(--violet)' : 'var(--text-3)'} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
