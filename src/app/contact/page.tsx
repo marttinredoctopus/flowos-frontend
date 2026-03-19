@@ -1,5 +1,5 @@
-export const dynamic = 'force-dynamic';
 'use client';
+export const dynamic = 'force-dynamic';
 import { useState } from 'react';
 import { LandingNav } from '@/components/landing/LandingNav';
 import { LandingFooter } from '@/components/landing/LandingFooter';
