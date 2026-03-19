@@ -44,9 +44,21 @@ export default function LoginPage() {
       const { data } = await api.post('/auth/login', { email, password });
       setAuth(data.user, data.accessToken);
       (window as any).__TASKSDONE_AUTH_TOKEN__ = data.accessToken;
-      router.push('/dashboard');
+      // Check onboarding status
+      try {
+        const meRes = await api.get('/auth/me', {
+          headers: { Authorization: `Bearer ${data.accessToken}` }
+        });
+        if (meRes.data.onboarding_completed === false) {
+          router.push('/onboarding');
+        } else {
+          router.push('/dashboard');
+        }
+      } catch {
+        router.push('/dashboard');
+      }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid email or password.');
+      setError(err.response?.data?.message || err.response?.data?.error || 'Invalid email or password.');
     } finally {
       setLoading(false);
     }
