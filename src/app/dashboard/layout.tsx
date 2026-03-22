@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Inbox, MessageSquare, Clock,
   FolderKanban, CheckSquare, Users, UserCircle, Target,
   CalendarDays, Lightbulb, Megaphone,
-  Palette, FileText,
+  Palette,
   TrendingUp, Search, Sparkles,
   Receipt, CreditCard, BarChart3,
   BookOpen, ClipboardList, Video, Camera, HardDrive, Settings,
@@ -40,7 +40,6 @@ const ALL_NAV_SECTIONS = [
       { label: 'Tasks',      href: '/dashboard/tasks',    Icon: CheckSquare,  color: 'var(--emerald)' },
       { label: 'Clients',    href: '/dashboard/clients',  Icon: UserCircle,   color: 'var(--rose)',    roles: ['admin','manager','member','team'] },
       { label: 'Team',       href: '/dashboard/team',     Icon: Users,        color: 'var(--indigo)',  roles: ['admin','manager','member','team'] },
-      { label: 'Goals & OKRs', href: '/dashboard/goals', Icon: Target,       color: 'var(--amber)',   roles: ['admin','manager','member','team'] },
     ],
   },
   {
@@ -56,7 +55,6 @@ const ALL_NAV_SECTIONS = [
     label: 'Creative',
     items: [
       { label: 'Design Hub',    href: '/dashboard/creative/design',  Icon: Palette,   color: 'var(--rose)',  roles: ['admin','manager','member','team'] },
-      { label: 'Content Team',  href: '/dashboard/creative/content', Icon: FileText,  color: 'var(--cyan)',  roles: ['admin','manager','member','team'] },
     ],
   },
   {
@@ -103,12 +101,10 @@ const PAGE_TITLES: Record<string, string> = {
   '/dashboard/inbox': 'Inbox',
   '/dashboard/chat': 'Chat',
   '/dashboard/time-tracking': 'Time Tracking',
-  '/dashboard/goals': 'Goals & OKRs',
   '/dashboard/content': 'Content Planner',
   '/dashboard/ideas': 'Idea Bank',
   '/dashboard/campaigns': 'Ad Campaigns',
   '/dashboard/creative/design': 'Design Hub',
-  '/dashboard/creative/content': 'Content Team',
   '/dashboard/intelligence': 'Competitor Analysis',
   '/dashboard/intelligence/generate': 'AI Generator',
   '/dashboard/intelligence/campaign-builder': 'AI Campaign Builder',
