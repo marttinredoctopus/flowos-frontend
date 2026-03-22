@@ -1,13 +1,29 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  AuthError,
+} from 'firebase/auth';
+import { auth, googleProvider } from '@/lib/firebase';
 import { useAuthStore } from '@/store/authStore';
 
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
-  withCredentials: true,
-});
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://api.tasksdone.cloud/api';
+
+async function exchangeFirebaseToken(idToken: string) {
+  const res = await fetch(`${API}/auth/firebase`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ idToken }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'Authentication failed');
+  }
+  return res.json() as Promise<{ user: any; accessToken: string }>;
+}
 
 function EyeIcon({ open }: { open: boolean }) {
   return open ? (
@@ -22,46 +38,91 @@ function EyeIcon({ open }: { open: boolean }) {
   );
 }
 
+function parseFirebaseError(err: AuthError): string {
+  switch (err.code) {
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':
+      return 'Invalid email or password.';
+    case 'auth/too-many-requests':
+      return 'Too many failed attempts. Please try again later.';
+    case 'auth/user-disabled':
+      return 'This account has been disabled.';
+    case 'auth/invalid-email':
+      return 'Invalid email address.';
+    case 'auth/popup-closed-by-user':
+      return '';
+    default:
+      return err.message || 'Login failed. Please try again.';
+  }
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const { setAuth, isAuthenticated, accessToken } = useAuthStore();
-  const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(params?.get('error') || '');
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // Only redirect if we have a live in-memory token (not just a stale persisted flag)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const e = params.get('error');
+      if (e) setError(e);
+    }
+  }, []);
+
   useEffect(() => {
     if (isAuthenticated && accessToken) router.push('/dashboard');
   }, [isAuthenticated, accessToken, router]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleAfterAuth(idToken: string) {
+    const { user, accessToken: token } = await exchangeFirebaseToken(idToken);
+    setAuth(user, token);
+    (window as any).__TASKSDONE_AUTH_TOKEN__ = token;
+    if (user.onboardingCompleted === false) {
+      router.push('/onboarding');
+    } else {
+      router.push('/dashboard');
+    }
+  }
+
+  async function handleEmailLogin(e: React.FormEvent) {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      const { data } = await api.post('/auth/login', { email, password });
-      setAuth(data.user, data.accessToken);
-      (window as any).__TASKSDONE_AUTH_TOKEN__ = data.accessToken;
-      // Check onboarding status
-      try {
-        const meRes = await api.get('/auth/me', {
-          headers: { Authorization: `Bearer ${data.accessToken}` }
-        });
-        if (meRes.data.onboarding_completed === false) {
-          router.push('/onboarding');
-        } else {
-          router.push('/dashboard');
-        }
-      } catch {
-        router.push('/dashboard');
-      }
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await cred.user.getIdToken();
+      await handleAfterAuth(idToken);
     } catch (err: any) {
-      setError(err.response?.data?.message || err.response?.data?.error || 'Invalid email or password.');
+      if (err.code) {
+        const msg = parseFirebaseError(err as AuthError);
+        if (msg) setError(msg);
+      } else {
+        setError(err.message || 'Login failed.');
+      }
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setError('');
+    setGoogleLoading(true);
+    try {
+      const cred = await signInWithPopup(auth, googleProvider);
+      const idToken = await cred.user.getIdToken();
+      await handleAfterAuth(idToken);
+    } catch (err: any) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        setError(parseFirebaseError(err as AuthError) || 'Google login failed.');
+      }
+    } finally {
+      setGoogleLoading(false);
     }
   }
 
@@ -90,55 +151,56 @@ export default function LoginPage() {
         </div>
 
         <div style={{
-          background: '#0f1117',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: '#0f1117', border: '1px solid rgba(255,255,255,0.08)',
           borderRadius: 20, padding: '2.5rem',
           boxShadow: '0 24px 80px rgba(0,0,0,0.6)',
         }}>
-          <h1 style={{
-            color: '#fff', fontSize: '1.5rem', fontWeight: 700,
-            marginBottom: 8, textAlign: 'center',
-          }}>Sign in to your workspace</h1>
-          <p style={{
-            color: 'rgba(255,255,255,0.4)', fontSize: '0.875rem',
-            textAlign: 'center', marginBottom: '2rem',
-          }}>
-            Don't have an account?{' '}
-            <a href="/register" style={{ color: '#818cf8', fontWeight: 600, textDecoration: 'none' }}>
-              Create one free
-            </a>
+          <h1 style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 700, marginBottom: 8, textAlign: 'center' }}>
+            Sign in to your workspace
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.875rem', textAlign: 'center', marginBottom: '2rem' }}>
+            Don&apos;t have an account?{' '}
+            <a href="/register" style={{ color: '#818cf8', fontWeight: 600, textDecoration: 'none' }}>Create one free</a>
           </p>
 
           {/* Google Sign In */}
-          <a
-            href={`${process.env.NEXT_PUBLIC_API_URL || 'https://api.tasksdone.cloud/api'}/auth/google`}
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={googleLoading || loading}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
               width: '100%', padding: '0.75rem', boxSizing: 'border-box',
               background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
               borderRadius: 10, color: '#fff', fontSize: '0.95rem', fontWeight: 600,
-              textDecoration: 'none', cursor: 'pointer', transition: 'background 0.2s',
+              cursor: googleLoading ? 'not-allowed' : 'pointer', transition: 'background 0.2s',
               marginBottom: '1.25rem',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.09)')}
+            onMouseEnter={e => !googleLoading && (e.currentTarget.style.background = 'rgba(255,255,255,0.09)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.05)')}
           >
-            <svg width="18" height="18" viewBox="0 0 48 48">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-            </svg>
-            Continue with Google
-          </a>
+            {googleLoading ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: 'spin 0.8s linear infinite' }}>
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              </svg>
+            )}
+            {googleLoading ? 'Signing in…' : 'Continue with Google'}
+          </button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '0.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.25rem' }}>
             <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.08)' }} />
             <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)' }}>or</span>
             <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.08)' }} />
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <form onSubmit={handleEmailLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
               <label style={{ display: 'block', marginBottom: 6, fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
                 Email
@@ -148,8 +210,7 @@ export default function LoginPage() {
                 value={email} onChange={e => setEmail(e.target.value)}
                 style={{
                   width: '100%', padding: '0.75rem 1rem', boxSizing: 'border-box',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: 10, color: '#fff', fontSize: '0.95rem', outline: 'none',
                 }}
               />
@@ -166,15 +227,13 @@ export default function LoginPage() {
                   value={password} onChange={e => setPassword(e.target.value)}
                   style={{
                     width: '100%', padding: '0.75rem 2.8rem 0.75rem 1rem', boxSizing: 'border-box',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: 10, color: '#fff', fontSize: '0.95rem', outline: 'none',
                   }}
                 />
                 <button type="button" onClick={() => setShowPass(!showPass)} style={{
                   position: 'absolute', right: '0.9rem', top: '50%', transform: 'translateY(-50%)',
-                  background: 'transparent', border: 'none',
-                  color: 'rgba(255,255,255,0.4)', cursor: 'pointer', padding: 0,
+                  background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', padding: 0,
                 }}>
                   <EyeIcon open={showPass} />
                 </button>
@@ -188,7 +247,7 @@ export default function LoginPage() {
               }}>{error}</div>
             )}
 
-            <button type="submit" disabled={loading} style={{
+            <button type="submit" disabled={loading || googleLoading} style={{
               marginTop: '0.5rem', width: '100%', padding: '0.875rem',
               background: loading ? 'rgba(99,102,241,0.5)' : 'linear-gradient(135deg,#6366f1,#a855f7)',
               border: 'none', borderRadius: 10, color: '#fff',
@@ -199,12 +258,12 @@ export default function LoginPage() {
               {loading && (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: 'spin 0.8s linear infinite' }}>
                   <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                  <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
                 </svg>
               )}
               {loading ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
+          <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </div>
       </div>
     </div>
