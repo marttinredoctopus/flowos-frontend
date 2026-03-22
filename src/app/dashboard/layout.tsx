@@ -245,7 +245,7 @@ function GlobalSearch({ onClose }: { onClose: () => void }) {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, accessToken, logout } = useAuthStore();
   const { theme, toggle: toggleTheme } = useThemeStore();
   const [hydrated, setHydrated] = useState(false);
 
@@ -274,7 +274,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (!hydrated) return;
-    if (!isAuthenticated) router.replace('/');
+    if (!isAuthenticated) router.replace('/login');
   }, [hydrated, isAuthenticated, router]);
 
   useEffect(() => {
@@ -301,7 +301,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return () => window.removeEventListener('keydown', handleKey);
   }, [gPressed, router]);
 
-  function handleLogout() { disconnectSocket(); logout(); router.replace('/'); }
+  async function handleLogout() {
+    disconnectSocket();
+    // Clear httpOnly refresh_token cookie on the backend
+    try {
+      const token = accessToken || (window as any).__TASKSDONE_AUTH_TOKEN__;
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://api.tasksdone.cloud/api'}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+    } catch { /* ignore */ }
+    logout();
+    router.replace('/login');
+  }
 
   function isActive(href: string) {
     if (href === '/dashboard') return pathname === '/dashboard';
