@@ -346,8 +346,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       className="flex-shrink-0 flex flex-col h-full overflow-hidden"
       style={{
         width: isMobile ? 224 : sidebarWidth,
-        background: 'var(--surface)',
-        borderRight: '1px solid var(--border)',
+        background: 'var(--sidebar-bg, var(--surface))',
+        borderRight: '1px solid var(--sidebar-border, var(--border))',
         transition: 'width 0.2s ease',
       }}
     >
@@ -439,7 +439,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             )}
             {/* Section label — hidden when collapsed */}
             {(!collapsed || isMobile) && (
-              <p className="text-[10px] font-bold tracking-widest uppercase px-3 py-1" style={{ color: 'var(--text-3)' }}>
+              <p className="text-[10px] font-bold tracking-widest uppercase px-3 py-1" style={{ color: 'var(--sidebar-section-text, var(--text-3))' }}>
                 {section.label}
               </p>
             )}
@@ -458,7 +458,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       height: 32,
                       background: active ? `color-mix(in srgb, ${item.color} 12%, transparent)` : 'transparent',
                       borderLeft: active ? `2px solid ${item.color}` : '2px solid transparent',
-                      color: active ? item.color : 'var(--text-3)',
+                      color: active ? item.color : 'var(--sidebar-section-text, var(--text-3))',
                       borderRadius: '0 8px 8px 0',
                       marginLeft: 0,
                       marginRight: 4,
@@ -481,7 +481,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     paddingRight: 8,
                     background: active ? `color-mix(in srgb, ${item.color} 12%, transparent)` : 'transparent',
                     borderLeft: active ? `2px solid ${item.color}` : '2px solid transparent',
-                    color: active ? item.color : undefined,
+                    color: active ? item.color : 'var(--sidebar-text, var(--text-2))',
                     borderRadius: '0 8px 8px 0',
                     marginLeft: 0,
                     marginRight: 4,
@@ -492,12 +492,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     className="w-5 h-5 flex-shrink-0 flex items-center justify-center rounded"
                     style={{
                       background: active ? `color-mix(in srgb, ${item.color} 15%, transparent)` : 'transparent',
-                      color: active ? item.color : 'var(--text-3)',
+                      color: active ? item.color : 'var(--sidebar-icon, var(--text-3))',
                     }}
                   >
                     <item.Icon size={15} />
                   </span>
-                  <span style={{ color: active ? item.color : undefined }}>{item.label}</span>
+                  <span style={{ color: active ? item.color : 'var(--sidebar-text, var(--text-2))' }}>{item.label}</span>
                 </Link>
               );
             })}
@@ -589,7 +589,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden" style={{ transition: 'width 0.2s ease' }}>
         {/* Mobile topbar */}
-        <header className="md:hidden flex items-center justify-between px-4 h-14 flex-shrink-0" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
+        <header className="md:hidden flex items-center justify-between px-4 h-14 flex-shrink-0" style={{ background: 'var(--topbar-bg, var(--surface))', borderBottom: '1px solid var(--topbar-border, var(--border))', boxShadow: 'var(--shadow-sm)' }}>
           <button onClick={() => setSidebarOpen(true)} className="p-2 transition" style={{ color: 'var(--text-2)' }}>
             <Menu size={20} />
           </button>
@@ -603,7 +603,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Desktop topbar */}
-        <header className="hidden md:flex items-center justify-between px-6 h-12 flex-shrink-0" style={{ borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
+        <header className="hidden md:flex items-center justify-between px-6 h-12 flex-shrink-0" style={{ borderBottom: '1px solid var(--topbar-border, var(--border))', background: 'var(--topbar-bg, var(--surface))', boxShadow: 'var(--shadow-sm)' }}>
           <h1 className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{pageTitle}</h1>
           <div className="flex items-center gap-2">
             <button

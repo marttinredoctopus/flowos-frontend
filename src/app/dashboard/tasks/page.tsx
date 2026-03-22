@@ -12,10 +12,10 @@ import toast from 'react-hot-toast';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const COLUMNS = [
-  { id: 'todo',        label: 'To Do',       color: 'var(--text-3)',   dim: 'rgba(74,77,106,0.15)' },
-  { id: 'in_progress', label: 'In Progress',  color: 'var(--indigo)',   dim: 'var(--indigo-2)' },
-  { id: 'review',      label: 'Review',       color: 'var(--amber)',    dim: 'var(--amber-2)' },
-  { id: 'done',        label: 'Done',         color: 'var(--emerald)',  dim: 'var(--emerald-2)' },
+  { id: 'todo',        label: 'To Do',       color: 'var(--text-3)',   dim: 'var(--indigo-2)',  bg: 'var(--kanban-todo-bg, var(--card))',     border: 'var(--kanban-todo-border, var(--border))' },
+  { id: 'in_progress', label: 'In Progress',  color: 'var(--indigo)',   dim: 'var(--indigo-2)',  bg: 'var(--kanban-progress-bg, var(--card))', border: 'var(--kanban-progress-border, var(--border))' },
+  { id: 'review',      label: 'Review',       color: 'var(--amber)',    dim: 'var(--amber-2)',   bg: 'var(--kanban-review-bg, var(--card))',   border: 'var(--kanban-review-border, var(--border))' },
+  { id: 'done',        label: 'Done',         color: 'var(--emerald)',  dim: 'var(--emerald-2)', bg: 'var(--kanban-done-bg, var(--card))',     border: 'var(--kanban-done-border, var(--border))' },
 ];
 
 const STATUS_MAP: Record<string, { label: string; color: string; dim: string }> = {
@@ -717,7 +717,7 @@ export default function TasksPage() {
                 onDragOver={e => { e.preventDefault(); setDragOver(col.id); }}
                 onDragLeave={() => setDragOver(null)}
                 onDrop={() => handleDrop(col.id)}
-                style={{ background: isOver ? col.dim : 'var(--card)', border: `1px solid ${isOver ? col.color : 'var(--border)'}`, borderRadius: 14, padding: 12, display: 'flex', flexDirection: 'column', transition: 'all 0.15s', minHeight: 120 }}>
+                style={{ background: isOver ? col.dim : col.bg, border: `1px solid ${isOver ? col.color : col.border}`, borderRadius: 14, padding: 12, display: 'flex', flexDirection: 'column', transition: 'all 0.15s', minHeight: 120 }}>
                 {/* Column header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
                   <span style={{ width: 9, height: 9, borderRadius: '50%', background: col.color, flexShrink: 0 }} />
@@ -738,7 +738,7 @@ export default function TasksPage() {
                         onDragStart={() => setDraggedId(t.id)}
                         onDragEnd={() => { setDraggedId(null); setDragOver(null); }}
                         onClick={() => setSelected(t)}
-                        style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: `3px solid ${p.color}`, borderRadius: 10, padding: '10px 12px', cursor: 'grab', opacity: draggedId === t.id ? 0.5 : 1, transition: 'all 0.15s' }}
+                        style={{ background: 'var(--card)', border: '1px solid var(--card-border, var(--border))', borderLeft: `3px solid ${p.color}`, borderRadius: 10, padding: '10px 12px', cursor: 'grab', opacity: draggedId === t.id ? 0.5 : 1, transition: 'all 0.15s', boxShadow: 'var(--card-shadow, none)' }}
                         onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow-sm)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'none'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'; }}>
                         <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 6, lineHeight: 1.35 }}>{t.title}</p>

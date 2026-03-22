@@ -3,8 +3,19 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
+import { useThemeStore } from '@/store/themeStore';
 import apiClient from '@/lib/apiClient';
 import { Avatar } from '@/components/ui/Avatar';
+
+// Light mode card tint map: accent color → {bg, border, textColor}
+const LIGHT_CARD_TINTS: Record<string, { bg: string; border: string; text: string }> = {
+  '#06b6d4': { bg: '#eff6ff', border: '#bfdbfe', text: '#1d4ed8' },
+  '#6366f1': { bg: '#f5f3ff', border: '#ddd6fe', text: '#6d28d9' },
+  '#a855f7': { bg: '#faf5ff', border: '#e9d5ff', text: '#7c3aed' },
+  '#ffc107': { bg: '#fffbeb', border: '#fde68a', text: '#b45309' },
+  '#ef5350': { bg: '#fff1f2', border: '#fecdd3', text: '#be123c' },
+  '#10b981': { bg: '#f0fdf4', border: '#bbf7d0', text: '#15803d' },
+};
 
 // ── Utility ──────────────────────────────────────────────────────────────────
 
@@ -32,33 +43,49 @@ function StatCard({
   color: string; sub?: string; warning?: boolean; href?: string;
 }) {
   const [hovered, setHovered] = useState(false);
-  const border = warning && Number(value) > 0 ? color + '50' : 'var(--border)';
+  const { theme } = useThemeStore();
+  const isLight = theme === 'light';
+  const tint = LIGHT_CARD_TINTS[color];
+
+  const bg = isLight
+    ? hovered ? (tint?.bg || color + '18') : (tint?.bg || '#ffffff')
+    : hovered ? 'var(--card-hover)' : 'var(--card)';
+  const borderColor = isLight
+    ? hovered ? color + 'aa' : (tint?.border || 'var(--border)')
+    : hovered ? color + '70' : (warning && Number(value) > 0 ? color + '50' : 'var(--border)');
+  const valueColor = isLight
+    ? (tint?.text || color)
+    : (warning && Number(value) > 0 ? color : 'var(--text)');
+  const boxShadow = isLight
+    ? hovered ? 'var(--card-shadow-hover)' : 'var(--card-shadow)'
+    : hovered ? `0 8px 32px ${color}18` : 'none';
+
   const card = (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: hovered ? 'var(--card-hover, #1e1e2e)' : 'var(--card)',
-        border: `1px solid ${hovered ? color + '70' : border}`,
+        background: bg,
+        border: `1px solid ${borderColor}`,
         borderBottom: `3px solid ${color}`,
         borderRadius: 16,
         padding: '20px 20px 18px',
         cursor: href ? 'pointer' : 'default',
         transition: 'all 0.2s ease',
-        boxShadow: hovered ? `0 8px 32px ${color}18` : 'none',
+        boxShadow,
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* background glow */}
+      {/* Decorative glow / tint orb */}
       <div style={{
         position: 'absolute', top: -20, right: -20, width: 80, height: 80,
-        borderRadius: '50%', background: color + '12',
+        borderRadius: '50%', background: color + (isLight ? '10' : '12'),
         transition: 'opacity 0.2s', opacity: hovered ? 1 : 0,
       }} />
       <div style={{ fontSize: 28, marginBottom: 10 }}>{icon}</div>
       <div style={{
-        fontSize: 32, fontWeight: 800, color: warning && Number(value) > 0 ? color : 'var(--text)',
+        fontSize: 32, fontWeight: 800, color: valueColor,
         lineHeight: 1, marginBottom: 4,
       }}>
         {value}
@@ -67,7 +94,7 @@ function StatCard({
         {label}
       </div>
       {sub && (
-        <div style={{ fontSize: 11, color: color, fontWeight: 600 }}>{sub}</div>
+        <div style={{ fontSize: 11, color, fontWeight: 600 }}>{sub}</div>
       )}
     </div>
   );
@@ -88,7 +115,7 @@ function PriorityItem({
       style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: '12px 14px', borderRadius: 12,
-        background: hov ? 'var(--card-hover, #1c1c2a)' : 'var(--surface)',
+        background: hov ? 'var(--card-hover)' : 'var(--surface)',
         border: `1px solid ${hov ? color + '44' : 'transparent'}`,
         transition: 'all 0.15s', cursor: href ? 'pointer' : 'default',
       }}
@@ -408,7 +435,7 @@ function ClientCard({ client, projects }: { client: any; projects: any[] }) {
         onMouseLeave={() => setHov(false)}
         style={{
           padding: '12px 14px', borderRadius: 12,
-          background: hov ? 'var(--card-hover, #1c1c2a)' : 'var(--surface)',
+          background: hov ? 'var(--card-hover)' : 'var(--surface)',
           border: `1px solid ${hov ? '#6366f144' : 'transparent'}`,
           transition: 'all 0.15s',
         }}
