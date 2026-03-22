@@ -1,12 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  createUserWithEmailAndPassword,
-  updateProfile,
-  signInWithPopup,
-  AuthError,
-} from 'firebase/auth';
+import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { useAuthStore } from '@/store/authStore';
 
@@ -20,8 +15,8 @@ async function exchangeFirebaseToken(idToken: string) {
     body: JSON.stringify({ idToken }),
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || 'Registration failed');
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Google sign-up failed');
   }
   return res.json() as Promise<{ user: any; accessToken: string }>;
 }
@@ -39,20 +34,11 @@ function EyeIcon({ open }: { open: boolean }) {
   );
 }
 
-function parseFirebaseError(err: AuthError): string {
-  switch (err.code) {
-    case 'auth/email-already-in-use': return 'An account with this email already exists.';
-    case 'auth/weak-password': return 'Password must be at least 6 characters.';
-    case 'auth/invalid-email': return 'Invalid email address.';
-    case 'auth/popup-closed-by-user': return '';
-    default: return err.message || 'Registration failed.';
-  }
-}
-
 export default function RegisterPage() {
   const router = useRouter();
   const { setAuth, isAuthenticated, accessToken } = useAuthStore();
   const [name, setName] = useState('');
+  const [orgName, setOrgName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
@@ -64,8 +50,7 @@ export default function RegisterPage() {
     if (isAuthenticated && accessToken) router.push('/onboarding');
   }, [isAuthenticated, accessToken, router]);
 
-  async function handleAfterAuth(idToken: string) {
-    const { user, accessToken: token } = await exchangeFirebaseToken(idToken);
+  function handleAfterAuth(user: any, token: string) {
     setAuth(user, token);
     (window as any).__TASKSDONE_AUTH_TOKEN__ = token;
     router.push('/onboarding');
@@ -76,18 +61,17 @@ export default function RegisterPage() {
     setError('');
     setLoading(true);
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      // Set display name in Firebase
-      await updateProfile(cred.user, { displayName: name });
-      const idToken = await cred.user.getIdToken();
-      await handleAfterAuth(idToken);
+      const res = await fetch(`${API}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name, email, password, orgName }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || data.message || 'Registration failed.');
+      handleAfterAuth(data.user, data.accessToken);
     } catch (err: any) {
-      if (err.code) {
-        const msg = parseFirebaseError(err as AuthError);
-        if (msg) setError(msg);
-      } else {
-        setError(err.message || 'Registration failed.');
-      }
+      setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -99,10 +83,13 @@ export default function RegisterPage() {
     try {
       const cred = await signInWithPopup(auth, googleProvider);
       const idToken = await cred.user.getIdToken();
-      await handleAfterAuth(idToken);
+      const { user, accessToken: token } = await exchangeFirebaseToken(idToken);
+      handleAfterAuth(user, token);
     } catch (err: any) {
-      if (err.code !== 'auth/popup-closed-by-user') {
-        setError(parseFirebaseError(err as AuthError) || 'Google sign-up failed.');
+      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+        // User cancelled
+      } else {
+        setError(err.message || 'Google sign-up failed.');
       }
     } finally {
       setGoogleLoading(false);
@@ -200,6 +187,21 @@ export default function RegisterPage() {
 
             <div>
               <label style={{ display: 'block', marginBottom: 6, fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
+                Agency / Company Name
+              </label>
+              <input
+                type="text" required placeholder="Acme Marketing Agency"
+                value={orgName} onChange={e => setOrgName(e.target.value)}
+                style={{
+                  width: '100%', padding: '0.75rem 1rem', boxSizing: 'border-box',
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 10, color: '#fff', fontSize: '0.95rem', outline: 'none',
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: 6, fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>
                 Email
               </label>
               <input
@@ -219,7 +221,7 @@ export default function RegisterPage() {
               </label>
               <div style={{ position: 'relative' }}>
                 <input
-                  type={showPass ? 'text' : 'password'} required placeholder="••••••••" minLength={6}
+                  type={showPass ? 'text' : 'password'} required placeholder="••••••••" minLength={8}
                   value={password} onChange={e => setPassword(e.target.value)}
                   style={{
                     width: '100%', padding: '0.75rem 2.8rem 0.75rem 1rem', boxSizing: 'border-box',
@@ -234,7 +236,7 @@ export default function RegisterPage() {
                   <EyeIcon open={showPass} />
                 </button>
               </div>
-              <p style={{ marginTop: 4, fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)' }}>Minimum 6 characters</p>
+              <p style={{ marginTop: 4, fontSize: '0.78rem', color: 'rgba(255,255,255,0.3)' }}>Minimum 8 characters</p>
             </div>
 
             {error && (

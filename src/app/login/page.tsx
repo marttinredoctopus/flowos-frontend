@@ -1,11 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  AuthError,
-} from 'firebase/auth';
+import { signInWithPopup, AuthError } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { useAuthStore } from '@/store/authStore';
 
@@ -19,8 +15,8 @@ async function exchangeFirebaseToken(idToken: string) {
     body: JSON.stringify({ idToken }),
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || 'Authentication failed');
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Google sign-in failed');
   }
   return res.json() as Promise<{ user: any; accessToken: string }>;
 }
@@ -36,25 +32,6 @@ function EyeIcon({ open }: { open: boolean }) {
       <line x1="1" y1="1" x2="23" y2="23" />
     </svg>
   );
-}
-
-function parseFirebaseError(err: AuthError): string {
-  switch (err.code) {
-    case 'auth/user-not-found':
-    case 'auth/wrong-password':
-    case 'auth/invalid-credential':
-      return 'Invalid email or password.';
-    case 'auth/too-many-requests':
-      return 'Too many failed attempts. Please try again later.';
-    case 'auth/user-disabled':
-      return 'This account has been disabled.';
-    case 'auth/invalid-email':
-      return 'Invalid email address.';
-    case 'auth/popup-closed-by-user':
-      return '';
-    default:
-      return err.message || 'Login failed. Please try again.';
-  }
 }
 
 export default function LoginPage() {
@@ -79,11 +56,10 @@ export default function LoginPage() {
     if (isAuthenticated && accessToken) router.push('/dashboard');
   }, [isAuthenticated, accessToken, router]);
 
-  async function handleAfterAuth(idToken: string) {
-    const { user, accessToken: token } = await exchangeFirebaseToken(idToken);
+  function handleAfterAuth(user: any, token: string) {
     setAuth(user, token);
     (window as any).__TASKSDONE_AUTH_TOKEN__ = token;
-    if (user.onboardingCompleted === false) {
+    if (user.onboardingCompleted === false || user.onboarding_completed === false) {
       router.push('/onboarding');
     } else {
       router.push('/dashboard');
@@ -95,16 +71,17 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      const idToken = await cred.user.getIdToken();
-      await handleAfterAuth(idToken);
+      const res = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || data.message || 'Invalid email or password.');
+      handleAfterAuth(data.user, data.accessToken);
     } catch (err: any) {
-      if (err.code) {
-        const msg = parseFirebaseError(err as AuthError);
-        if (msg) setError(msg);
-      } else {
-        setError(err.message || 'Login failed.');
-      }
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -116,10 +93,13 @@ export default function LoginPage() {
     try {
       const cred = await signInWithPopup(auth, googleProvider);
       const idToken = await cred.user.getIdToken();
-      await handleAfterAuth(idToken);
+      const { user, accessToken: token } = await exchangeFirebaseToken(idToken);
+      handleAfterAuth(user, token);
     } catch (err: any) {
-      if (err.code !== 'auth/popup-closed-by-user') {
-        setError(parseFirebaseError(err as AuthError) || 'Google login failed.');
+      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+        // User cancelled, do nothing
+      } else {
+        setError(err.message || 'Google sign-in failed.');
       }
     } finally {
       setGoogleLoading(false);
@@ -133,7 +113,6 @@ export default function LoginPage() {
       fontFamily: "'Inter',-apple-system,sans-serif", padding: '1rem',
     }}>
       <div style={{ width: '100%', maxWidth: 420 }}>
-        {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <a href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
             <div style={{
@@ -253,7 +232,6 @@ export default function LoginPage() {
               border: 'none', borderRadius: 10, color: '#fff',
               fontSize: '1rem', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              transition: 'opacity 0.2s',
             }}>
               {loading && (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: 'spin 0.8s linear infinite' }}>
